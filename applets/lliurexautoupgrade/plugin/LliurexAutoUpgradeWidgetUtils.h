@@ -28,7 +28,7 @@ public:
 
 signals:
 
-    void unitStateChanged(const QString &newState);
+    void unitStateChanged(int actionCode);
 
 private:    
      

@@ -142,13 +142,25 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
 {
         Q_UNUSED(interfaceName);
         Q_UNUSED(invalidatedProperties);
+        int actionCode=0;
 
         if (changedProperties.contains("StatusText")) {
             QString newState = changedProperties["StatusText"].toString();
             if (newState!=lastUpdate){
                 lastUpdate=newState;
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
-                emit unitStateChanged(newState);
+                
+                if (newState.contains("Installing packages")){
+                    actionCode=1;
+                }else if (newState.contains("installing finished")){
+                    actionCode=2;
+                }else if (newState.contains("Nothing to execute")){
+                    actionCode=0;
+                }else{
+                    actionCode=2;
+                }
+
+                emit unitStateChanged(actionCode);
             }
         }
       

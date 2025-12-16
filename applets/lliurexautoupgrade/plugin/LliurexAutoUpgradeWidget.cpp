@@ -44,7 +44,6 @@ void LliurexAutoUpgradeWidget::plasmoidMode(){
         if (m_utils->testListener()){
             if (m_utils->startListener()){
                 connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
-                changeTryIconState(0);
             }else{
                 disableApplet();
             }
@@ -57,22 +56,61 @@ void LliurexAutoUpgradeWidget::plasmoidMode(){
 
 }
 
-void LliurexAutoUpgradeWidget::manageState(const QString &state){
+void LliurexAutoUpgradeWidget::manageState(int actionCode){
 
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state"<<state;
+    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state"<<actionCode;
+
+    if (actionCode==0){
+        notificationBody=i18n("Nothing to execute. Waiting for new updates.");
+        setIconName("lliurex-auto-upgrade");
+        setIconNamePh("lliurex-auto-upgrade");
+        setSubToolTip(notificationBody);
+        changeTryIconState(1);
+    }else if (actionCode==1){
+        notificationBody=i18n("Installing packages. Do not turn off or restart the computer");
+        setIconNamePh("lliurex-auto-upgrade");
+        setSubToolTip(notificationBody);
+        closeAllNotifications();
+        m_notification = new KNotification(QStringLiteral("Run"),KNotification::Persistent,this);
+        m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
+        m_notification->setTitle(notificationTitle);
+        m_notification->setText(notificationBody);
+        m_notification->setIconName("lliurex-auto-upgrade");
+        m_notification->sendEvent();
+        changeTryIconState(0);
+    }else if (actionCode==2){
+        notificationBody=i18n("Installing finished. Waiting for new updates.");
+        setIconNamePh("lliurex-auto-upgrade");
+        setSubToolTip(notificationBody);
+        closeAllNotifications();
+        m_notification = new KNotification(QStringLiteral("Run"),KNotification::CloseOnTimeout,this);
+        m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
+        m_notification->setTitle(notificationTitle);
+        m_notification->setText(notificationBody);
+        m_notification->setIconName("lliurex-auto-upgrade");
+        m_notification->sendEvent();
+        changeTryIconState(0);
+    }
 }
 
 
 void LliurexAutoUpgradeWidget::disableApplet(){
 
     qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Desactivando";
-    notificationBody=i18n("LliureX-Auto-Upgrade not available in this computer");
+    notificationBody=i18n("Unable to get information from LliureX-Auto-Upgrade");
    
-    setIconName("lliurex-auto-upgrade");
-    setIconNamePh("lliurex-auto-upgrade");
+    setIconName("lliurex-auto-upgrade-error");
+    setIconNamePh("lliurex-auto-upgrade-error");
     setSubToolTip(notificationBody);
     changeTryIconState(1);
 
+}
+
+void LliurexAutoUpgradeWidget::closeAllNotifications(){
+
+    if (m_notification){
+        m_notification->close();
+    }
 }
 
 LliurexAutoUpgradeWidget::TrayStatus LliurexAutoUpgradeWidget::status() const

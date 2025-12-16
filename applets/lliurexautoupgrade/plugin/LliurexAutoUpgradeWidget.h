@@ -81,10 +81,11 @@ private:
     QPointer<KNotification> m_notification;
     void plasmoidMode();
     void disableApplet();
+    void closeAllNotifications();
 
 private slots:
     
-    void manageState(const QString &newState);
+    void manageState(int actionCode);
 
 
 };
