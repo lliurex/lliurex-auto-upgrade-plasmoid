@@ -1,0 +1,28 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# lliurex <lliurex@lliurex.net>, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: http://lliurex.net\n"
+"POT-Creation-Date: 2025-12-16 16:41+0100\n"
+"PO-Revision-Date: 2025-12-16 16:41+0100\n"
+"Last-Translator: lliurex <lliurex@lliurex.net>\n"
+"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:30
+#, kde-format
+msgid "LliureX-Auto-Upgrade"
+msgstr ""
+
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:69
+#, kde-format
+msgid "LliureX-Auto-Upgrade not available in this computer"
+msgstr ""

@@ -1,0 +1,46 @@
+#ifndef PLASMA_LLIUREX_AUTO_UPGRADE_WIDGET_UTILS_H
+#define PLASMA_LLIUREX_AUTO_UPGRADE_WIDGET_UTILS_H
+
+#include <QObject>
+#include <QProcess>
+#include <QFile>
+#include <QDir>
+
+using namespace std;
+
+
+class LliurexAutoUpgradeWidgetUtils : public QObject
+{
+    Q_OBJECT
+
+
+public:
+   
+
+   LliurexAutoUpgradeWidgetUtils(QObject *parent = nullptr);
+
+   QString m_unitName="lliurex-auto-upgrade.service";
+
+   void cleanCache();
+   bool showWidget();
+   bool testListener();
+   bool startListener();
+
+signals:
+
+    void unitStateChanged(const QString &newState);
+
+private:    
+     
+    QString user;
+    QString getInstalledVersion();
+    QString lastUpdate;
+
+
+private slots:
+
+    void onPropertiesChanged(const QString &interfaceName, const QVariantMap &changedProperties, const QStringList &invalidatedProperties);
+
+     
+};
+#endif // PLASMA_LLIUREX_AUTO_UPGRADE_WIDGET_UTILS_H
