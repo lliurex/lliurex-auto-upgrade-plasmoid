@@ -1,0 +1,5 @@
+usr/lib/*/qt5/qml/org/kde/plasma/private/lliurexautoupgrade/
+usr/share/kservices5/plasma-applet-org.kde.plasma.lliurexautoupgrade.desktop
+usr/share/metainfo/org.kde.plasma.lliurexautoupgrade.appdata.xml
+usr/share/plasma/plasmoids/org.kde.plasma.lliurexautoupgrade/
+usr/share/locale/*/*/*.mo
