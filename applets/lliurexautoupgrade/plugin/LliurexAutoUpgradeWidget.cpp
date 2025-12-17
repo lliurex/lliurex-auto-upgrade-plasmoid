@@ -4,7 +4,6 @@
 #include <KLocalizedString>
 #include <KFormat>
 #include <KNotification>
-#include <KRun>
 #include <QTimer>
 #include <QStandardPaths>
 #include <QDebug>

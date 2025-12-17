@@ -1,0 +1,29 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "juapesai@hotmail.com",
+                "Name": "Juan Ramon Pelegrina"
+            }
+        ],
+        "Category": "Utilities",
+        "Description": "Allows you to know if lliurex-auto-upgrade is running",
+        "Description[ca@valencia]": "Permet conéixer si lliurex-auto-upgrade esta en marxa",
+        "Description[ca]": "Permet conéixer si lliurex-auto-upgrade esta en marxa",
+        "Description[en_GB]":"Allows you to know if lliurex-auto-upgrade is running",
+        "Description[es]": "Permite conocer si lliurex-auto-upgrade esta en marcha",
+        "EnabledByDefault": true,
+        "Icon": "lliurex-auto-upgrade",
+        "Id": "org.kde.plasma.lliurexautoupgrade",
+        "License": "LGPL",
+        "Name": "LliureX-Auto-Upgrade",
+        "Name[ca@valencia]": "LliureX-Auto-Upgrade",
+        "Name[ca]": "LliureX-Auto-Upgrade",
+        "Name[en_GB]": "LliureX-Auto-Upgrade",
+        "Name[es]": "LliureX-Auto-Upgrade",
+        "Website": "https://lliurex.net/"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-NotificationAreaCategory": "SystemServices"
+}

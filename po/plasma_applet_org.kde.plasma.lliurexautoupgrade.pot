@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lliurexautoupgrade \n"
-"Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2025-12-17 10:30+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-17 14:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:29
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:28
 #, kde-format
 msgid "LliureX-Auto-Upgrade"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:61
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:60
 #, kde-format
 msgid "Nothing to execute. Waiting for new updates."
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:67
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:66
 #, kde-format
 msgid "Installing packages. Do not turn off or restart the computer"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:78
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:77
 #, kde-format
 msgid "Installing finished. Waiting for new updates."
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:95
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:94
 #, kde-format
 msgid "Unable to get information from LliureX-Auto-Upgrade"
 msgstr ""
