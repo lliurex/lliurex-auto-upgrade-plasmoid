@@ -1,0 +1,42 @@
+Source: lliurex-auto-upgrade-plasmoid
+Section: kde
+Priority: optional
+Maintainer: LliureX Team <lliurex@gva.es>
+Build-Depends: cmake,
+               debhelper (>= 9),
+               extra-cmake-modules,
+               pkgconf,
+               libkf6plasma-dev,
+               libkf6i18n-dev,
+               pkg-config,
+               qt6-base-dev,
+               qt6-declarative-dev,
+               libkf6runner-dev,
+               libkf6notifications-dev,
+               libkf6kio-dev
+Standards-Version: 3.9.6
+Homepage: https://lliurex.net
+Vcs-Git: https://svn.lliurex.net/noble/lliurex-auto-upgrade-plasmoid
+Vcs-Browser: https://github.com/lliurex/lliurex-auto-upgrade-plasmoid
+
+Package: lliurex-auto-upgrade-plasmoid
+Architecture: any
+Depends: plasma-framework,
+         plasma-workspace,
+         qml-module-org-kde-draganddrop,
+         qml-module-org-kde-kcoreaddons,
+         qml-module-org-kde-kio,
+         qml-module-org-kde-purpose,
+         qml-module-qtgraphicaleffects,
+         qml-module-qtquick-layouts,
+         qml-module-qtquick-window2,
+         qml-module-qtwebengine,
+         qml-module-qtwebkit,
+         lliurex-auto-upgrade,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: additional widgets for Plasma 6
+ This package provides a widget for Classroom Control
+
+
+
