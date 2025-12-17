@@ -5,13 +5,13 @@ Comment[ca@valencia]=LliureX-Auto-Upgrade
 Comment[ca]=LliureX-Auto-Upgrade
 Comment[es]=LliureX-Auto-Upgrade
 
-[Event/Run]
+[Event/RemoteAction]
 Name=LliureX-Auto-Upgrade running
 Name[ca@valencia]=LliureX-Auto-Upgrade en funcionament
 Name[ca]=LliureX-Auto-Upgrade en funcionament
 Name[es]=LliureX-Auto-Upgrade en funcionamiento
 
-Comment=Occurs when LliureX-Auto-Upgrade is performing actions on the system.
+Comment=Occurs when LliureX-Auto-Upgrade is performing actions on the system
 Comment[ca@valencia]=Ocorre quan LliureX-Auto-Upgrade esta realitzant accions sobre el sistema
 Comment[ca]=Ocorre quan LliureX-Auto-Upgrade esta realitzant accions sobre el sistema
 Comment[es]=Ocurre cuando LliureX-Auto-Upgrade esta realizando acciones sobre el sistema

@@ -118,7 +118,6 @@ bool LliurexAutoUpgradeWidgetUtils::startListener(){
 
     QDBusReply<QDBusObjectPath> reply=managerInterface.call("GetUnit",m_unitName);
     QString m_unitPath=reply.value().path();
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: "<<m_unitPath;
 
     QDBusConnection::systemBus().connect(
             "org.freedesktop.systemd1",       // sender service
@@ -152,12 +151,10 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 
                 if (newState.contains("Installing packages")){
                     actionCode=1;
-                }else if (newState.contains("installing finished")){
+                }else if (newState.contains("Installing finished")){
                     actionCode=2;
                 }else if (newState.contains("Nothing to execute")){
                     actionCode=0;
-                }else{
-                    actionCode=2;
                 }
 
                 emit unitStateChanged(actionCode);

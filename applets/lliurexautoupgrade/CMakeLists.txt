@@ -32,5 +32,9 @@ install(FILES plugin/qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/plasma/privat
 install(TARGETS lliurexautoupgradeplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/plasma/private/lliurexautoupgrade)
 install(FILES "icons/lliurex-auto-upgrade.svg"
         DESTINATION ${DATAROOTDIR}/usr/share/icons/hicolor/scalable/apps/)
+install(FILES "icons/lliurex-auto-upgrade-run.svg"
+        DESTINATION ${DATAROOTDIR}/usr/share/icons/hicolor/scalable/apps/)
+install(FILES "icons/lliurex-auto-upgrade-error.svg"
+        DESTINATION ${DATAROOTDIR}/usr/share/icons/hicolor/scalable/apps/)
 install(FILES "knotifications5/lliurexautoupgrade.notifyrc"
        DESTINATION ${DATAROOTDIR}/usr/share/knotifications5/)

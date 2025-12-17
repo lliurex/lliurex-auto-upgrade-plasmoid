@@ -25,7 +25,6 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
 
    
 {
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Iniciando";
     m_utils->cleanCache();
     notificationTitle=i18n("LliureX-Auto-Upgrade");
     setSubToolTip(notificationTitle);
@@ -35,12 +34,9 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
 
 void LliurexAutoUpgradeWidget::plasmoidMode(){
 
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Iniciando";
-
     if (!m_utils->showWidget()){
        changeTryIconState(2);
     }else{
-        qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Comprobando dBus";
         if (m_utils->testListener()){
             if (m_utils->startListener()){
                 connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
@@ -59,7 +55,8 @@ void LliurexAutoUpgradeWidget::plasmoidMode(){
 void LliurexAutoUpgradeWidget::manageState(int actionCode){
 
     qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state"<<actionCode;
-
+    closeAllNotifications();
+    
     if (actionCode==0){
         notificationBody=i18n("Nothing to execute. Waiting for new updates.");
         setIconName("lliurex-auto-upgrade");
@@ -70,26 +67,24 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode){
         notificationBody=i18n("Installing packages. Do not turn off or restart the computer");
         setIconNamePh("lliurex-auto-upgrade");
         setSubToolTip(notificationBody);
-        closeAllNotifications();
-        m_notification = new KNotification(QStringLiteral("Run"),KNotification::Persistent,this);
+        m_notification = new KNotification(QStringLiteral("RemoteAction"),KNotification::Persistent,this);
         m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
-        m_notification->setTitle(notificationTitle);
-        m_notification->setText(notificationBody);
-        m_notification->setIconName("lliurex-auto-upgrade");
+        m_notification->setTitle(notificationBody);
+        m_notification->setText("");
+        m_notification->setIconName("lliurex-auto-upgrade-run");
         m_notification->sendEvent();
         changeTryIconState(0);
     }else if (actionCode==2){
         notificationBody=i18n("Installing finished. Waiting for new updates.");
         setIconNamePh("lliurex-auto-upgrade");
         setSubToolTip(notificationBody);
-        closeAllNotifications();
-        m_notification = new KNotification(QStringLiteral("Run"),KNotification::CloseOnTimeout,this);
+        m_notification = new KNotification(QStringLiteral("RemoteAction"),KNotification::CloseOnTimeout,this);
         m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
-        m_notification->setTitle(notificationTitle);
-        m_notification->setText(notificationBody);
-        m_notification->setIconName("lliurex-auto-upgrade");
+        m_notification->setTitle(notificationBody);
+        m_notification->setText("");
+        m_notification->setIconName("lliurex-auto-upgrade-run");
         m_notification->sendEvent();
-        changeTryIconState(0);
+        changeTryIconState(1);
     }
 }
 
