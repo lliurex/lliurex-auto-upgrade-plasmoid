@@ -10,10 +10,8 @@ Build-Depends: cmake (>= 2.8.12),
                libkf5i18n-dev (>= 5.17.0~),
                libqt5x11extras5-dev (>= 5.4),
                pkg-config,
-               qtbase5-dev (>= 5.4),
+              qtbase5-dev (>= 5.4),
                qtdeclarative5-dev (>= 5.4),
-               libedupals-n4d-dev,
-               libedupals-base-dev,
                libkf5runner-dev,
                libkf5notifications-dev,
                kio-dev
@@ -37,7 +35,7 @@ Depends: kpackagetool5,
          qml-module-qtquick-window2,
          qml-module-qtwebengine,
          qml-module-qtwebkit,
-         lliurex-auto-upgrade
+         lliurex-auto-upgrade,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: additional widgets for Plasma 5
