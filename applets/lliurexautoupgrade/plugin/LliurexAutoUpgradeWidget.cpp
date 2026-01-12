@@ -17,7 +17,9 @@
 #include <KIO/CommandLauncherJob>
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
-
+#include <QDBusConnection>
+#include <QDBusInterface>
+#include <QDBusReply>
 
 LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     : QObject(parent)
@@ -27,6 +29,10 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
 {
     m_utils->cleanCache();
     notificationTitle=i18n("LliureX-Auto-Upgrade");
+    notifyInterface=new QDBusInterface("org.freedesktop.Notifications",
+                                   "/org/freedesktop/Notifications",
+                                   "org.freedesktop.Notifications",
+                                   QDBusConnection::sessionBus()); 
     setSubToolTip(notificationTitle);
     plasmoidMode();
 
@@ -56,7 +62,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode){
 
     qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state"<<actionCode;
     closeAllNotifications();
-    
+
     if (actionCode==0){
         notificationBody=i18n("Nothing to execute. Waiting for new updates.");
         setIconName("lliurex-auto-upgrade");
@@ -67,12 +73,15 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode){
         notificationBody=i18n("Installing packages. Do not turn off or restart the computer");
         setIconNamePh("lliurex-auto-upgrade");
         setSubToolTip(notificationBody);
+        /*
         m_notification = new KNotification(QStringLiteral("RemoteAction"),KNotification::Persistent,this);
         m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
         m_notification->setTitle(notificationBody);
         m_notification->setText("");
         m_notification->setIconName("lliurex-auto-upgrade-run");
         m_notification->sendEvent();
+        */
+        sendNotification();
         changeTryIconState(0);
     }else if (actionCode==2){
         notificationBody=i18n("Installing finished. Waiting for new updates.");
@@ -101,10 +110,32 @@ void LliurexAutoUpgradeWidget::disableApplet(){
 
 }
 
+void LliurexAutoUpgradeWidget::sendNotification(){
+    
+    if (notifyInterface->isValid()){
+        uint replacesId=0;
+        QStringList actions;
+        QVariantMap hints;
+        QDBusReply<uint> reply=notifyInterface->call("Notify","LliureX-Auto-Upgrade",replacesId,"lliurex-auto-upgrade-run",notificationBody,"",actions,hints,0);
+        if (reply.isValid()){
+            lastNotificationId=reply.value();
+        }
+        qDebug()<<"NOTIFICACION"<<lastNotificationId;
+    }
+}
+
 void LliurexAutoUpgradeWidget::closeAllNotifications(){
+
+    uint referenceId=0;
 
     if (m_notification){
         m_notification->close();
+    }
+
+    if (referenceId<lastNotificationId){
+        if (notifyInterface->isValid()){
+            notifyInterface->call("CloseNotification",lastNotificationId);
+        }
     }
 }
 
