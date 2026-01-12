@@ -119,7 +119,6 @@ void LliurexAutoUpgradeWidget::sendNotification(){
         if (reply.isValid()){
             lastNotificationId=reply.value();
         }
-        qDebug()<<"NOTIFICACION"<<lastNotificationId;
     }
 }
 
