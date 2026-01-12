@@ -36,4 +36,4 @@ install(FILES "icons/lliurex-auto-upgrade-run.svg"
 install(FILES "icons/lliurex-auto-upgrade-error.svg"
         DESTINATION ${DATAROOTDIR}/usr/share/icons/hicolor/scalable/apps/)
 install(FILES "knotifications6/lliurexautoupgrade.notifyrc"
-       DESTINATION ${DATAROOTDIR}/usr/share/knotifications5/)
+       DESTINATION ${DATAROOTDIR}/usr/share/knotifications6/)
