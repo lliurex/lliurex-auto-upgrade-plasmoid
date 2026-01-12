@@ -10,6 +10,7 @@
 #include <QThread>
 #include <QFileSystemWatcher>
 #include <KIO/CommandLauncherJob>
+#include <QDBusInterface>
 
 #include "LliurexAutoUpgradeWidgetUtils.h"
 
@@ -77,11 +78,14 @@ private:
     QString notificationTitle;
     QString notificationBody;
     QString notificationServerBody;
+    uint lastNotificationId;
+    QDBusInterface *notifyInterface; 
     LliurexAutoUpgradeWidgetUtils *m_utils;
     QPointer<KNotification> m_notification;
     void plasmoidMode();
     void disableApplet();
     void closeAllNotifications();
+    void sendNotification();
 
 private slots:
     
