@@ -2,7 +2,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 packageRoot=".."
 plasmoidName="org.kde.plasma.lliurexautoupgrade"
-widgetName="${plasmoidName##*.}"
+widgetName="lliurex-auto-upgrade-plasmoid"
 projectName="plasma_applet_${plasmoidName}"
 outFile="${projectName}.pot.new"
 

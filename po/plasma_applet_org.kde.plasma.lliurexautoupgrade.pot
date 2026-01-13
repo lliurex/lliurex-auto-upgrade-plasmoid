@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the lliurexautoupgrade package.
+# This file is distributed under the same license as the lliurex-auto-upgrade-plasmoid package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: lliurexautoupgrade \n"
+"Project-Id-Version: lliurex-auto-upgrade-plasmoid \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-17 14:12+0100\n"
+"POT-Creation-Date: 2026-01-13 09:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:28
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:30
 #, kde-format
 msgid "LliureX-Auto-Upgrade"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:60
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:66
 #, kde-format
-msgid "Nothing to execute. Waiting for new updates."
+msgid "Nothing to execute. Waiting for new updates"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:66
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:72
 #, kde-format
 msgid "Installing packages. Do not turn off or restart the computer"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:77
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:86
 #, kde-format
-msgid "Installing finished. Waiting for new updates."
+msgid "Installing finished. Waiting for new updates"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:94
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:103
 #, kde-format
 msgid "Unable to get information from LliureX-Auto-Upgrade"
 msgstr ""

@@ -1,0 +1,16 @@
+[Desktop Entry]
+Categories=LliureX-Administration;
+Comment[es_ES]=Herramienta para la instalación remota de paquetes
+Comment=Tool to remote installation of packages
+Comment[ca@valencia]=Ferramenta per a la instal·lació remota de paquets
+Comment[ca_ES.UTF-8@valencia]=Ferramenta per a la instal·lació remota de paquets
+Encoding=UTF-8
+Exec=/usr/sbin/lliurex-auto-upgrade
+GenericName[es_ES]=lliurex-auto-upgrade-plasmoid
+GenericName=lliurex-auto-upgrade-plasmoid
+Icon=lliurex-auto-upgrade-plasmoid
+Name[es_ES]=lliurex-auto-upgrade-plasmoid
+Name=lliurex-auto-upgrade-plasmoid
+Name[ca@valencia]=lliurex-auto-upgrade-plasmoid
+Name[ca_ES.UTF-8@valencia]=lliurex-auto-upgrade-plasmoid
+NoDisplay=true
