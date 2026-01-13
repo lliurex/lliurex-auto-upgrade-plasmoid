@@ -64,7 +64,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode){
     closeAllNotifications();
 
     if (actionCode==0){
-        notificationBody=i18n("Nothing to execute. Waiting for new updates.");
+        notificationBody=i18n("Nothing to execute. Waiting for new updates");
         setIconName("lliurex-auto-upgrade");
         setIconNamePh("lliurex-auto-upgrade");
         setSubToolTip(notificationBody);
@@ -84,7 +84,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode){
         sendNotification();
         changeTryIconState(0);
     }else if (actionCode==2){
-        notificationBody=i18n("Installing finished. Waiting for new updates.");
+        notificationBody=i18n("Installing finished. Waiting for new updates");
         setIconNamePh("lliurex-auto-upgrade");
         setSubToolTip(notificationBody);
         m_notification = new KNotification(QStringLiteral("RemoteAction"),KNotification::CloseOnTimeout,this);
@@ -100,7 +100,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode){
 
 void LliurexAutoUpgradeWidget::disableApplet(){
 
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Desactivando";
+    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Unable to connect with lliurex-auto-upgrade";
     notificationBody=i18n("Unable to get information from LliureX-Auto-Upgrade");
    
     setIconName("lliurex-auto-upgrade-error");
@@ -116,11 +116,11 @@ void LliurexAutoUpgradeWidget::sendNotification(){
         uint replacesId=0;
         QStringList actions;
         QVariantMap hints;
+        hints.insert("desktop-entry","lliurex-auto-upgrade-plasmoid");
         QDBusReply<uint> reply=notifyInterface->call("Notify","LliureX-Auto-Upgrade",replacesId,"lliurex-auto-upgrade-run",notificationBody,"",actions,hints,0);
         if (reply.isValid()){
             lastNotificationId=reply.value();
         }
-        qDebug()<<"NOTIFICACION"<<lastNotificationId;
     }
 }
 
