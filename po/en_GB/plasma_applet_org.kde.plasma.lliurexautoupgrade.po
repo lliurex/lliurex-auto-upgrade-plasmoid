@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2026-01-13 10:16+0100\n"
-"PO-Revision-Date: 2026-01-13 10:17+0100\n"
+"POT-Creation-Date: 2026-01-14 10:02+0100\n"
+"PO-Revision-Date: 2026-01-14 10:02+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -32,12 +32,12 @@ msgstr ""
 msgid "Installing packages. Do not turn off or restart the computer"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:87
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:79
 #, kde-format
 msgid "Installing finished. Waiting for new updates"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:104
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:96
 #, kde-format
 msgid "Unable to get information from LliureX-Auto-Upgrade"
 msgstr ""
