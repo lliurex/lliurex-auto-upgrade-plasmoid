@@ -72,25 +72,17 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode){
         notificationBody=i18n("Installing packages. Do not turn off or restart the computer");
         setIconNamePh("lliurex-auto-upgrade");
         setSubToolTip(notificationBody);
-        /*
-        m_notification = new KNotification(QStringLiteral("RemoteAction"),KNotification::Persistent,this);
-        m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
-        m_notification->setTitle(notificationBody);
-        m_notification->setText("");
-        m_notification->setIconName("lliurex-auto-upgrade-run");
-        m_notification->sendEvent();
-        */
         sendNotification();
         changeTryIconState(0);
     }else if (actionCode==2){
         notificationBody=i18n("Installing finished. Waiting for new updates");
-        setIconNamePh("lliurex-auto-upgrade");
+        setIconNamePh("lliurex-auto-upgrade-ok");
         setSubToolTip(notificationBody);
         m_notification = new KNotification(QStringLiteral("RemoteAction"),KNotification::CloseOnTimeout,this);
         m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
         m_notification->setTitle(notificationBody);
         m_notification->setText("");
-        m_notification->setIconName("lliurex-auto-upgrade-run");
+        m_notification->setIconName("lliurex-auto-upgrade-ok");
         m_notification->sendEvent();
         changeTryIconState(1);
     }
@@ -116,7 +108,7 @@ void LliurexAutoUpgradeWidget::sendNotification(){
         QStringList actions;
         QVariantMap hints;
         hints.insert("desktop-entry","lliurex-auto-upgrade-plasmoid");
-        QDBusReply<uint> reply=notifyInterface->call("Notify","LliureX-Auto-Upgrade",replacesId,"lliurex-auto-upgrade-run",notificationBody,"",actions,hints,0);
+        QDBusReply<uint> reply=notifyInterface->call("Notify","LliureX-Auto-Upgrade",replacesId,"lliurex-auto-upgrade",notificationBody,"",actions,hints,0);
         if (reply.isValid()){
             lastNotificationId=reply.value();
         }
