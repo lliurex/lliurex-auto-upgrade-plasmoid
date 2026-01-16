@@ -159,7 +159,7 @@ void LliurexAutoUpgradeWidget::changeTryIconState(int state){
     }else if (state==2){
         setIconName("lliurex-auto-upgrade");
         setIconNamePh("lliurex-auto-upgrade");
-        setSubToolTip("LliureX-Auto-Upgrade is not enabled in this computer");
+        setSubToolTip(i18n("LliureX-Auto-Upgrade is not enabled in this computer"));
         setStatus(HiddenStatus);
     }
 

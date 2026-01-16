@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2026-01-16 12:35+0100\n"
-"PO-Revision-Date: 2026-01-16 12:41+0100\n"
+"POT-Creation-Date: 2026-01-16 13:54+0100\n"
+"PO-Revision-Date: 2026-01-16 13:55+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:31
 #, kde-format
@@ -52,3 +52,8 @@ msgstr "Tot està al dia"
 #, kde-format
 msgid "Unable to get information from LliureX-Auto-Upgrade"
 msgstr "No és possible obtindre informació de LliureX-Auto-Upgrade"
+
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:162
+#, kde-format
+msgid "LliureX-Auto-Upgrade is not enabled in this computer"
+msgstr "LliureX-Auto-Upgrade no està disponible en este equip"
