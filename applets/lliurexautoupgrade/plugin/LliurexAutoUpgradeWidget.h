@@ -71,8 +71,8 @@ signals:
 private:
 
     TrayStatus m_status = PassiveStatus;
-    QString m_iconName = QStringLiteral("lliurex-auto-upgrade");
-    QString m_iconNamePh = QStringLiteral("lliurex-auto-upgrade");
+    QString m_iconName = QStringLiteral("lliurex-auto-upgrade-warning");
+    QString m_iconNamePh = QStringLiteral("lliurex-auto-upgrade-warning");
     QString m_toolTip;
     QString m_subToolTip;
     QString notificationTitle;
