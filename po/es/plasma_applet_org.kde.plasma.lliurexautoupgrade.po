@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-14 10:37+0100\n"
-"PO-Revision-Date: 2026-01-14 10:41+0100\n"
+"POT-Creation-Date: 2026-01-16 13:20+0100\n"
+"PO-Revision-Date: 2026-01-16 13:28+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -22,22 +22,42 @@ msgstr ""
 msgid "LliureX-Auto-Upgrade"
 msgstr "LliureX-Auto-Upgrade"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:66
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:31
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:68
 #, kde-format
-msgid "Nothing to execute. Waiting for new updates"
-msgstr "Nada que ejecutar. Esperando nuevas actualizaciones"
+msgid "Waiting to check status"
+msgstr "Esperando para comprobar el estado"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:72
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:73
+#, kde-format
+msgid "Checking status"
+msgstr "Comprobando el estado"
+
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:78
 #, kde-format
 msgid "Installing packages. Do not turn off or restart the computer"
 msgstr "Instalando paquetes. No apague ni reinicie el equipo"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:78
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:84
 #, kde-format
-msgid "Installing finished. Waiting for new updates"
-msgstr "Instalación finalizada. Esperando nuevas actualizaciones"
+msgid "Installing finished. Everything is up to date"
+msgstr "Instalación finalizada. Todo esta al día"
 
 #: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:95
 #, kde-format
+msgid "Everything is up to date"
+msgstr "Todo esta al día"
+
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:108
+#, kde-format
 msgid "Unable to get information from LliureX-Auto-Upgrade"
 msgstr "No es posible obtener información de LliureX-Auto-Upgrade"
+
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:161
+#, kde-format
+msgid "LliureX-Auto-Upgrade is not enabled in this computer"
+msgstr "LliureX-Auto-Upgrade no esta disponible en este equipo"
+
+#, kde-format
+#~ msgid "Nothing to execute. Waiting for new updates"
+#~ msgstr "Nada que ejecutar. Esperando nuevas actualizaciones"

@@ -35,7 +35,8 @@ private:
     QString user;
     QString getInstalledVersion();
     QString lastUpdate;
-
+    int actionCode=1;
+    QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
 
 private slots:
 
