@@ -2,7 +2,6 @@
 #define PLASMA_LLIUREX_AUTO_UPGRADE_WIDGET_UTILS_H
 
 #include <QObject>
-#include <QProcess>
 #include <QFile>
 #include <QDir>
 

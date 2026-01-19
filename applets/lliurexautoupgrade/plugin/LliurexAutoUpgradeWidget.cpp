@@ -4,18 +4,9 @@
 #include <KLocalizedString>
 #include <KFormat>
 #include <KNotification>
-#include <QTimer>
-#include <QStandardPaths>
 #include <QDebug>
-#include <QFile>
-#include <QFileSystemWatcher>
-#include <QThread>
 #include <QtCore/QStringList>
-#include <QJsonObject>
-#include <QDebug>
-#include <KIO/CommandLauncherJob>
-#include <QtConcurrent/QtConcurrent>
-#include <QFuture>
+
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
@@ -159,7 +150,7 @@ void LliurexAutoUpgradeWidget::changeTryIconState(int state){
         setIconName("lliurex-auto-upgrade");
         setIconNamePh("lliurex-auto-upgrade");
         setSubToolTip(i18n("LliureX-Auto-Upgrade is not enabled in this computer"));
-        setStatus(PassiveStatus);
+        setStatus(HiddenStatus);
     }
 
 }
