@@ -4,19 +4,9 @@
 #include <KLocalizedString>
 #include <KFormat>
 #include <KNotification>
-#include <KRun>
-#include <QTimer>
-#include <QStandardPaths>
 #include <QDebug>
-#include <QFile>
-#include <QFileSystemWatcher>
-#include <QThread>
 #include <QtCore/QStringList>
-#include <QJsonObject>
-#include <QDebug>
-#include <KIO/CommandLauncherJob>
-#include <QtConcurrent/QtConcurrent>
-#include <QFuture>
+
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>

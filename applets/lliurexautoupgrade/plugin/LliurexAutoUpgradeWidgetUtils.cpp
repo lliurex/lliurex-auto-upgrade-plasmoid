@@ -1,16 +1,9 @@
 #include "LliurexAutoUpgradeWidgetUtils.h"
 
 #include <QFile>
-#include <QDateTime>
-#include <QFileInfo>
-#include <QRegularExpression>
-#include <QStandardPaths>
 #include <QDebug>
-#include <QTextStream>
-#include <QJsonObject>
 #include <QList>
 #include <KLocalizedString>
-#include <sys/types.h>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDebug>
@@ -19,9 +12,6 @@
 
 #include <tuple>
 #include <sys/types.h>
-#include <QDebug>
-
-using namespace std;
 
 
 LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)

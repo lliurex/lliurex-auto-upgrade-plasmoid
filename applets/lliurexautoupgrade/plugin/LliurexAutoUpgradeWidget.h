@@ -2,14 +2,8 @@
 #define PLASMA_LLIUREX_AUTO_UPGRADE_WIDGET_H
 
 #include <QObject>
-#include <QProcess>
 #include <QPointer>
 #include <KNotification>
-#include <QDir>
-#include <QFile>
-#include <QThread>
-#include <QFileSystemWatcher>
-#include <KIO/CommandLauncherJob>
 #include <QDBusInterface>
 
 #include "LliurexAutoUpgradeWidgetUtils.h"
