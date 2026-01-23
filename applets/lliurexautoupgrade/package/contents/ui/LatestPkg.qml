@@ -45,18 +45,20 @@ Rectangle{
         PC3.ScrollView {
             Layout.topMargin:10
             Layout.bottomMargin:10
-            Layout.leftMargin:5
-            Layout.rightMargin:5
+            Layout.leftMargin:15
+            Layout.rightMargin:10
             implicitWidth:parent.width-10
             implicitHeight:250
             ListView{
                 id:listView
                 focus:true
                 model:lliurexAutoUpgradeWidget.lastInstalledPkg
-                delegate: Text {
+                delegate: Components.Label {
                     text: "- "+modelData
                     font.pointSize:11
-                    lineHeight:1.5
+                    height:30
+                    width:listView.width-10
+                    elide:Text.ElideMiddle
                 }
                               
             }
