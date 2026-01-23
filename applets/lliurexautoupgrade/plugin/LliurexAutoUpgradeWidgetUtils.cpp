@@ -151,14 +151,34 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     actionCode=2;
                 }else if (newState.contains("before installing")){
                     actionCode=3;
+                }else if (newState.contains("Installling packages")){
+                    actionCode=3;
+                    QString tmpPkg=newState.split(": ")[1];
+                    getLastInstalledPkg(tmpPkg);
+
                 }else if (newState.contains("Installing finished")){
                     actionCode=4;
                 }else if (newState.contains("Nothing to execute")){
                     actionCode=5;
                 }
-
-                emit unitStateChanged(actionCode);
+  
+                emit unitStateChanged(actionCode,lastInstalledPkg);
             }
         }
       
+}
+
+void LliurexAutoUpgradeWidgetUtils::getLastInstalledPkg(QString installedPkg)
+{
+
+    QStringList tmpPkg=installedPkg.split(" ");
+
+    for (const QString &pkg : tmpPkg){
+
+        if (!lastInstalledPkg.contains(pkg)){
+            lastInstalledPkg.prepend(pkg);
+        }
+
+    }
+
 }

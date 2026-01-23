@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
+import QtQuick.Controls as QQC2
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PC3
@@ -41,22 +41,43 @@ PlasmoidItem {
     toolTipMainText: lliurexAutoUpgradeWidget.toolTip
     toolTipSubText: lliurexAutoUpgradeWidget.subToolTip
 
-    Component.onCompleted: {
-      
-    }
+     
+    fullRepresentation: Item {
+        id:root
+        Layout.fillWidth:true
+        QQC2.StackView{
+            id:stackLayout
+            property int currentIndex:lliurexAutoUpgradeWidget.currentStackIndex
+            width:parent.width
+            height:parent.height
+            initialItem:infoPanel
+            onCurrentIndexChanged:{
+                switch(currentIndex){
+                    case 0:
+                        stackLayout.replace(infoPanel)
+                        break;
+                    case 1:
+                        stackLayout.replace(pkgInstalled)
+                        break;
+                }
+            }
 
-   
-   fullRepresentation: PC3.Page {
-        implicitWidth: Kirigami.Units.gridUnit * 12
-        implicitHeight: Kirigami.Units.gridUnit * 6
-        
-        PlasmaExtras.PlaceholderMessage {
-            id:phMsg
-            anchors.centerIn: parent
-            width: parent.width - (Kirigami.Units.gridUnit * 4)
-            iconName: lliurexAutoUpgradeWidget.iconNamePh
-            text:lliurexAutoUpgradeWidget.subToolTip
+            Component{
+                id:infoPanel
+                InfoView{
+                    id:infoView
+                }
+            }
+
+            Component{
+                id:pkgInstalled
+                LatestPkg{
+                    id:latestPkg
+                }
+            }
+
         }
+       
     }
 
  }  

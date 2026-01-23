@@ -50,10 +50,12 @@ void LliurexAutoUpgradeWidget::plasmoidMode(){
 
 }
 
-void LliurexAutoUpgradeWidget::manageState(int actionCode){
+void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedPkg){
 
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state"<<actionCode;
+    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<actionCode<<" Instaled pkg: "<<installedPkg;
     closeAllNotifications();
+    setCurrentStackIndex(0);
+    setShowDetailsBtn(false);
 
     if (actionCode==1){
         notificationBody=i18n("Waiting to check status");
@@ -88,8 +90,16 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode){
         setIconNamePh("lliurex-auto-upgrade-ok");
         setSubToolTip(notificationBody);
     }
-       
-   
+
+    if (actionCode==4 || actionCode==5){
+        setLastInstalledPkg(installedPkg);
+        if (!installedPkg.isEmpty()){
+            setShowDetailsBtn(true);
+        }else{
+            setShowDetailsBtn(false);
+        }
+    }
+        
 }
 
 
@@ -155,6 +165,12 @@ void LliurexAutoUpgradeWidget::changeTryIconState(int state){
 
 }
 
+void LliurexAutoUpgradeWidget::manageNavigation(int stackIndex)
+{
+
+    setCurrentStackIndex(stackIndex);
+}
+
 void LliurexAutoUpgradeWidget::setStatus(LliurexAutoUpgradeWidget::TrayStatus status)
 {
     if (m_status != status) {
@@ -215,4 +231,47 @@ void LliurexAutoUpgradeWidget::setSubToolTip(const QString &subToolTip)
     }
 }
 
+bool LliurexAutoUpgradeWidget::showDetailsBtn()
+{
 
+    return m_showDetailsBtn;
+}
+
+void LliurexAutoUpgradeWidget::setShowDetailsBtn(bool showDetailsBtn)
+{
+
+    if (m_showDetailsBtn!=showDetailsBtn){
+        m_showDetailsBtn=showDetailsBtn;
+        emit showDetailsBtnChanged();
+    }
+}
+
+int LliurexAutoUpgradeWidget::currentStackIndex()
+{
+
+    return m_currentStackIndex;
+}
+
+void LliurexAutoUpgradeWidget::setCurrentStackIndex(int currentStackIndex)
+{
+
+    if (m_currentStackIndex!=currentStackIndex){
+        m_currentStackIndex=currentStackIndex;
+        emit currentStackIndexChanged();
+    }
+}
+
+QStringList LliurexAutoUpgradeWidget::lastInstalledPkg()
+{
+
+    return m_lastInstalledPkg;
+}
+
+void LliurexAutoUpgradeWidget::setLastInstalledPkg(QStringList installedPkg)
+{
+
+    if (m_lastInstalledPkg!=installedPkg){
+        m_lastInstalledPkg=installedPkg;
+        emit lastInstalledPkgChanged();
+    }
+}

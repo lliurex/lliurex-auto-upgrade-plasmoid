@@ -24,6 +24,9 @@ class LliurexAutoUpgradeWidget : public QObject
     Q_PROPERTY(QString subToolTip READ subToolTip NOTIFY subToolTipChanged)
     Q_PROPERTY(QString iconName READ iconName NOTIFY iconNameChanged)
     Q_PROPERTY(QString iconNamePh READ iconNamePh NOTIFY iconNamePhChanged)
+    Q_PROPERTY(bool showDetailsBtn READ showDetailsBtn NOTIFY showDetailsBtnChanged)
+    Q_PROPERTY(int currentStackIndex READ currentStackIndex NOTIFY currentStackIndexChanged)
+    Q_PROPERTY(QStringList lastInstalledPkg READ lastInstalledPkg NOTIFY lastInstalledPkgChanged)
     Q_ENUMS(TrayStatus)
 
 public:
@@ -54,6 +57,19 @@ public:
     QString iconNamePh() const;
     void setIconNamePh(const QString &name);
 
+    bool showDetailsBtn();
+    void setShowDetailsBtn(bool);
+
+    int currentStackIndex();
+    void setCurrentStackIndex(int);
+
+    QStringList lastInstalledPkg();
+    void setLastInstalledPkg(QStringList lastInstalledPkgChanged);
+
+public slots:
+
+    void manageNavigation(int stackIndex);
+    
 signals:
    
     void toolTipChanged();
@@ -61,6 +77,9 @@ signals:
     void iconNameChanged();
     void iconNamePhChanged();
     void statusChanged();
+    void showDetailsBtnChanged();
+    void currentStackIndexChanged();
+    void lastInstalledPkgChanged();
  
 private:
 
@@ -69,6 +88,9 @@ private:
     QString m_iconNamePh = QStringLiteral("lliurex-auto-upgrade-warning");
     QString m_toolTip;
     QString m_subToolTip;
+    bool m_showDetailsBtn=false;
+    int m_currentStackIndex=0;
+    QStringList m_lastInstalledPkg;
     QString notificationTitle;
     QString notificationBody;
     QString notificationServerBody;
@@ -83,7 +105,7 @@ private:
 
 private slots:
     
-    void manageState(int actionCode);
+    void manageState(int actionCode,QStringList installedPkg);
 
 
 };
