@@ -27,15 +27,18 @@ public:
 
 signals:
 
-    void unitStateChanged(int actionCode);
+    void unitStateChanged(int actionCode,QStringList lastPkgInstalled);
 
 private:    
      
     QString user;
-    QString getInstalledVersion();
     QString lastUpdate;
     int actionCode=1;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
+    QStringList lastInstalledPkg;
+
+    QString getInstalledVersion();
+    void getLastInstalledPkg(QString instaledPkg);
 
 private slots:
 

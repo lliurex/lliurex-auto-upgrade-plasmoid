@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2026-01-16 13:54+0100\n"
-"PO-Revision-Date: 2026-01-16 13:54+0100\n"
+"POT-Creation-Date: 2026-01-23 12:40+0100\n"
+"PO-Revision-Date: 2026-01-23 12:41+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -15,35 +15,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.0.1\n"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:31
+#: ../applets/lliurexautoupgrade/package/contents/ui/InfoView.qml:35
+#, kde-format
+msgid "View installed/updated packages"
+msgstr ""
+
+#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:27
+#, kde-format
+msgid "Back to main view"
+msgstr ""
+
+#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:36
+#, kde-format
+msgid "List of installed/updated packages"
+msgstr ""
+
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:21
 #, kde-format
 msgid "LliureX-Auto-Upgrade"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:32
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:69
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:22
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:61
 #, kde-format
 msgid "Waiting to check status"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:74
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:66
 #, kde-format
 msgid "Checking status"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:79
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:71
 #, kde-format
 msgid "Installing packages. Do not turn off or restart the computer"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:85
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:77
 #, kde-format
 msgid "Installing finished. Everything is up to date"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:96
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:88
 #, kde-format
 msgid "Everything is up to date"
 msgstr ""
