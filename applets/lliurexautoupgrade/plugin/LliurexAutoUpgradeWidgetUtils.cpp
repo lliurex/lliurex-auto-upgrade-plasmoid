@@ -1,16 +1,9 @@
 #include "LliurexAutoUpgradeWidgetUtils.h"
 
 #include <QFile>
-#include <QDateTime>
-#include <QFileInfo>
-#include <QRegularExpression>
-#include <QStandardPaths>
 #include <QDebug>
-#include <QTextStream>
-#include <QJsonObject>
 #include <QList>
 #include <KLocalizedString>
-#include <sys/types.h>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDebug>
@@ -19,9 +12,6 @@
 
 #include <tuple>
 #include <sys/types.h>
-#include <QDebug>
-
-using namespace std;
 
 
 LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
@@ -93,7 +83,14 @@ QString LliurexAutoUpgradeWidgetUtils::getInstalledVersion(){
 
 bool LliurexAutoUpgradeWidgetUtils::showWidget(){
 
-    return true; 
+    QFile disabelToken;
+    disabelToken.setFileName(disableAutoUpgrade);
+
+    if (disabelToken.exists()){
+        return false;
+    }else{
+        return true;
+    }
 }  
 
 bool LliurexAutoUpgradeWidgetUtils::testListener(){
@@ -141,7 +138,6 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
 {
         Q_UNUSED(interfaceName);
         Q_UNUSED(invalidatedProperties);
-        int actionCode=0;
 
         if (changedProperties.contains("StatusText")) {
             QString newState = changedProperties["StatusText"].toString();
@@ -149,16 +145,41 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 lastUpdate=newState;
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
                 
-                if (newState.contains("Installing packages")){
+                if (newState.contains("First run") || newState.contains("dpkg to finish")){
                     actionCode=1;
-                }else if (newState.contains("Installing finished")){
+                }else if (newState.contains("remote file")){
                     actionCode=2;
+                }else if (newState.contains("before installing")){
+                    actionCode=3;
+                }else if (newState.contains("Installling packages")){
+                    actionCode=3;
+                    QString tmpPkg=newState.split(": ")[1];
+                    getLastInstalledPkg(tmpPkg);
+
+                }else if (newState.contains("Installing finished")){
+                    actionCode=4;
                 }else if (newState.contains("Nothing to execute")){
-                    actionCode=0;
+                    actionCode=5;
                 }
 
-                emit unitStateChanged(actionCode);
+                emit unitStateChanged(actionCode,lastInstalledPkg);
             }
         }
       
+}
+
+void LliurexAutoUpgradeWidgetUtils::getLastInstalledPkg(QString installedPkg)
+{
+
+    QStringList tmpPkg=installedPkg.split(" ");
+
+    for (const QString &pkg : tmpPkg){
+        if (!pkg.isEmpty()){
+            if (!lastInstalledPkg.contains(pkg)){
+                lastInstalledPkg.prepend(pkg);
+            }
+        }
+
+    }
+
 }

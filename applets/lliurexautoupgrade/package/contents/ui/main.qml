@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Controls 2.15
+import QtQuick.Controls 2.15 as QQC2
 
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core 2.1 as PlasmaCore
@@ -47,17 +47,43 @@ Item {
 
    
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
-    Plasmoid.fullRepresentation: PC3.Page {
-        implicitWidth: PlasmaCore.Units.gridUnit * 12
-        implicitHeight: PlasmaCore.Units.gridUnit * 6
-        
-        PlasmaExtras.PlaceholderMessage {
-            id:phMsg
-            anchors.centerIn: parent
-            width: parent.width - (PlasmaCore.Units.gridUnit * 4)
-            iconName: lliurexAutoUpgradeWidget.iconNamePh
-            text:Plasmoid.toolTipSubText
-        }
-    }
+    Plasmoid.fullRepresentation: Item {
+        id:root
+        Layout.fillWidth:true
+        QQC2.StackView{
+            id:stackLayout
+            property int currentIndex:lliurexAutoUpgradeWidget.currentStackIndex
+            width:parent.width
+            height:parent.height
+            initialItem:infoPanel
+            onCurrentIndexChanged:{
+                switch(currentIndex){
+                    case 0:
+                        stackLayout.replace(infoPanel)
+                        break;
+                    
+                    case 1:
+                        stackLayout.replace(pkgInstalled)
+                        break;
+                    
+                }
+            }
 
- }  
+            Component{
+                id:infoPanel
+                InfoView{
+                    id:infoView
+                }
+            }
+
+            Component{
+                id:pkgInstalled
+                LatestPkg{
+                    id:latestPkg
+                }
+            }
+            
+        }
+
+    }
+} 
