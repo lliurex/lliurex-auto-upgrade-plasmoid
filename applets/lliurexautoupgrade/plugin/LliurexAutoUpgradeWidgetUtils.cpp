@@ -174,11 +174,11 @@ void LliurexAutoUpgradeWidgetUtils::getLastInstalledPkg(QString installedPkg)
     QStringList tmpPkg=installedPkg.split(" ");
 
     for (const QString &pkg : tmpPkg){
-
-        if (!lastInstalledPkg.contains(pkg)){
-            lastInstalledPkg.prepend(pkg);
+        if (!pkg.isEmpty()){
+            if (!lastInstalledPkg.contains(pkg)){
+                lastInstalledPkg.prepend(pkg);
+            }
         }
-
     }
 
 }
