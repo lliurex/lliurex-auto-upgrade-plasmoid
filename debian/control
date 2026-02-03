@@ -36,7 +36,7 @@ Depends: kpackagetool5,
          qml-module-qtquick-window2,
          qml-module-qtwebengine,
          qml-module-qtwebkit,
-         lliurex-auto-upgrade,
+         lliurex-auto-upgrade (>= 0.30),
          ${misc:Depends},
          ${shlibs:Depends}
 Description: additional widgets for Plasma 5
