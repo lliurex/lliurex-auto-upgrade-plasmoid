@@ -93,7 +93,8 @@ private:
     QStringList m_lastInstalledPkg;
     QString notificationTitle;
     QString notificationBody;
-    QString notificationServerBody;
+    QString notificationHead;
+    QString notificationFoot;
     uint lastNotificationId;
     QDBusInterface *notifyInterface; 
     LliurexAutoUpgradeWidgetUtils *m_utils;
@@ -105,7 +106,7 @@ private:
 
 private slots:
     
-    void manageState(int actionCode,QStringList installedPkg);
+    void manageState(int actionCode,QStringList installedPkg,QString lastExecutionTime);
 
 
 };
