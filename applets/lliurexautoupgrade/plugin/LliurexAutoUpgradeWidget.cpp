@@ -19,7 +19,9 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
 {
     m_utils->cleanCache();
     notificationTitle=i18n("LliureX-Auto-Upgrade");
-    notificationBody=i18n("Waiting to check status");
+    notificationBody=i18n("Ready to check status");
+    notificationHead=i18n("Last execution:");
+    notificationFoot=i18n("Wait for next check");
     notifyInterface=new QDBusInterface("org.freedesktop.Notifications",
                                    "/org/freedesktop/Notifications",
                                    "org.freedesktop.Notifications",
@@ -50,7 +52,7 @@ void LliurexAutoUpgradeWidget::plasmoidMode(){
 
 }
 
-void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedPkg){
+void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedPkg, QString lastExecutionTime){
 
     qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<actionCode<<" Instaled pkg: "<<installedPkg;
     closeAllNotifications();
@@ -58,7 +60,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedP
     setShowDetailsBtn(false);
 
     if (actionCode==1){
-        notificationBody=i18n("Waiting to check status");
+        notificationBody=i18n("Ready to check status");
         setIconName("lliurex-auto-upgrade-warning");
         setIconNamePh("lliurex-auto-upgrade-warning");
         setSubToolTip(notificationBody);
@@ -74,10 +76,11 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedP
         setSubToolTip(notificationBody);
         sendNotification();
      }else if (actionCode==4){
-        notificationBody=i18n("Installing finished. Everything is up to date");
+        notificationBody=i18n("Updates installed")+"\n"+notificationFoot;
         setIconName("lliurex-auto-upgrade-ok");
         setIconNamePh("lliurex-auto-upgrade-ok");
-        setSubToolTip(notificationBody);
+        QString headText=notificationHead+" "+lastExecutionTime;
+        setSubToolTip(headText+"\n"+notificationBody);
         m_notification = new KNotification(QStringLiteral("RemoteAction"),KNotification::CloseOnTimeout,this);
         m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
         m_notification->setTitle(notificationBody);
@@ -85,10 +88,17 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedP
         m_notification->setIconName("lliurex-auto-upgrade-ok");
         m_notification->sendEvent();
     }else if(actionCode==5){
-        notificationBody=i18n("Everything is up to date");
+        notificationBody=i18n("No changes")+"\n"+notificationFoot;
         setIconName("lliurex-auto-upgrade-ok");
         setIconNamePh("lliurex-auto-upgrade-ok");
-        setSubToolTip(notificationBody);
+        QString headText=notificationHead+" "+lastExecutionTime;
+        setSubToolTip(headText+"\n"+notificationBody);
+    }else if(actionCode==6){
+        notificationBody=i18n("Error, process not completed")+"\n"+notificationFoot;
+        setIconName("lliurex-auto-upgrade-error");
+        setIconNamePh("lliurex-auto-upgrade-error");
+        QString headText=notificationHead+" "+lastExecutionTime;
+        setSubToolTip(headText+"\n"+notificationBody);
     }
 
     if (actionCode==4 || actionCode==5){
