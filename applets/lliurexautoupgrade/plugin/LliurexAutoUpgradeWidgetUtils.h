@@ -27,7 +27,7 @@ public:
 
 signals:
 
-    void unitStateChanged(int actionCode,QStringList lastPkgInstalled);
+    void unitStateChanged(int actionCode,QStringList lastPkgInstalled,QString lastExecutionTime);
 
 private:    
      
@@ -39,6 +39,7 @@ private:
 
     QString getInstalledVersion();
     void getLastInstalledPkg(QString instaledPkg);
+    QString getLastExecutionTime();
 
 private slots:
 

@@ -9,6 +9,8 @@
 #include <QDebug>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QDate>
+#include <QTime>
 
 #include <tuple>
 #include <sys/types.h>
@@ -143,6 +145,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
             QString newState = changedProperties["StatusText"].toString();
             if (newState!=lastUpdate){
                 lastUpdate=newState;
+                QString lastExecution="";
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
                 
                 if (newState.contains("First run") || newState.contains("dpkg to finish")){
@@ -155,14 +158,18 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     actionCode=3;
                     QString tmpPkg=newState.split(": ")[1];
                     getLastInstalledPkg(tmpPkg);
-
                 }else if (newState.contains("Installing finished")){
                     actionCode=4;
+                    lastExecution=getLastExecutionTime();
                 }else if (newState.contains("Nothing to execute")){
                     actionCode=5;
+                    lastExecution=getLastExecutionTime();
+                }else if (newState.contains("Failed to")){
+                    actionCode=6;
+                    lastExecution=getLastExecutionTime();
                 }
-  
-                emit unitStateChanged(actionCode,lastInstalledPkg);
+
+                emit unitStateChanged(actionCode,lastInstalledPkg,lastExecution);
             }
         }
       
@@ -179,6 +186,21 @@ void LliurexAutoUpgradeWidgetUtils::getLastInstalledPkg(QString installedPkg)
                 lastInstalledPkg.prepend(pkg);
             }
         }
+
     }
+
+}
+
+QString LliurexAutoUpgradeWidgetUtils::getLastExecutionTime(){
+
+    QDate currentDate=QDate::currentDate();
+    QString lastDay=currentDate.toString(Qt::ISODate);
+    QTime currentTime=QTime::currentTime();
+    QString lastTime=currentTime.toString(Qt::ISODate);
+
+    QString LastExecution=lastDay+" - "+lastTime;
+
+    return LastExecution;
+
 
 }
