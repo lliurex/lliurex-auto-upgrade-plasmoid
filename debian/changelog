@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.4) jammy; urgency=medium
+
+  * Fixed translations
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 09 Feb 2026 14:16:03 +0100
+
 lliurex-auto-upgrade-plasmoid (0.1.3) jammy; urgency=medium
 
   * Changed feedback messages
