@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-06 12:42+0100\n"
-"PO-Revision-Date: 2026-02-06 12:46+0100\n"
+"PO-Revision-Date: 2026-02-09 14:18+0100\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -41,7 +41,7 @@ msgstr "LliureX-Auto-Upgrade"
 #: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:63
 #, kde-format
 msgid "Ready to check status"
-msgstr "Preparat per a comprovar estat"
+msgstr "Preparat per a comprovar l'estat"
 
 #: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:23
 #, kde-format
