@@ -115,25 +115,29 @@ bool LliurexAutoUpgradeWidgetUtils::startListener(){
 
     
 
-    QDBusReply<QDBusObjectPath> reply=managerInterface.call("GetUnit",m_unitName);
-    QString m_unitPath=reply.value().path();
+    if (managerInterface.isValid()){
+        QDBusReply<QDBusObjectPath> reply=managerInterface.call("GetUnit",m_unitName);
+        QString m_unitPath=reply.value().path();
 
-    QDBusConnection::systemBus().connect(
-            "org.freedesktop.systemd1",       // sender service
-            m_unitPath,                         // object path
-            "org.freedesktop.DBus.Properties",// interface
-            "PropertiesChanged",              // signal name
-            this,                             // receiver QObject
-            SLOT(onPropertiesChanged(const QString&, const QVariantMap&, const QStringList&)));
+        QDBusConnection::systemBus().connect(
+                "org.freedesktop.systemd1",       // sender service
+                m_unitPath,                         // object path
+                "org.freedesktop.DBus.Properties",// interface
+                "PropertiesChanged",              // signal name
+                this,                             // receiver QObject
+                SLOT(onPropertiesChanged(const QString&, const QVariantMap&, const QStringList&)));
 
-    QDBusMessage subscribeCall = managerInterface.call("Subscribe");
-        if (subscribeCall.type() == QDBusMessage::ErrorMessage) {
-            qDebug() << "[LLIUREX-AUTO-UPGRADE]: Failed to subscribe to systemd D-Bus signals:" << subscribeCall.errorMessage();
-            return false;
-        } else {
-            qDebug() << "[LLIUREX-AUTO-UPGRADE]: Successfully subscribed to systemd manager signals.";
-            return true;
-        }
+        QDBusMessage subscribeCall = managerInterface.call("Subscribe");
+            if (subscribeCall.type() == QDBusMessage::ErrorMessage) {
+                qDebug() << "[LLIUREX-AUTO-UPGRADE]: Failed to subscribe to systemd D-Bus signals:" << subscribeCall.errorMessage();
+                return false;
+            } else {
+                qDebug() << "[LLIUREX-AUTO-UPGRADE]: Successfully subscribed to systemd manager signals.";
+                return true;
+            }
+    }else{
+        return false;
+    }
 }
 
 void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interfaceName, const QVariantMap& changedProperties, const QStringList &invalidatedProperties)
