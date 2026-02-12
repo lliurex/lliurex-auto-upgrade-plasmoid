@@ -24,10 +24,11 @@ public:
    bool showWidget();
    bool testListener();
    bool startListener();
+   QStringList getPkgsInstalledInSession();
 
 signals:
 
-    void unitStateChanged(int actionCode,QStringList lastPkgInstalled,QString lastExecutionTime);
+    void unitStateChanged(int actionCode,QString lastExecutionTime);
 
 private:    
      
@@ -36,6 +37,7 @@ private:
     int actionCode=1;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
     QStringList lastInstalledPkg;
+    QString pkgInstalledLog="/run/lliurex-auto-upgrade/installed_packages.log";
 
     QString getInstalledVersion();
     void getLastInstalledPkg(QString instaledPkg);

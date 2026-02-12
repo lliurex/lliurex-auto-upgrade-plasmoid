@@ -173,7 +173,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     lastExecution=getLastExecutionTime();
                 }
 
-                emit unitStateChanged(actionCode,lastInstalledPkg,lastExecution);
+                emit unitStateChanged(actionCode,lastExecution);
             }
         }
       
@@ -202,9 +202,38 @@ QString LliurexAutoUpgradeWidgetUtils::getLastExecutionTime(){
     QTime currentTime=QTime::currentTime();
     QString lastTime=currentTime.toString(Qt::ISODate);
 
-    QString LastExecution=lastDay+" - "+lastTime;
+    QString lastTimeStamp=lastDay+" - "+lastTime;
 
-    return LastExecution;
+    return lastTimeStamp;
 
+
+}
+
+QStringList LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
+
+    QFile pkgsLog(pkgInstalledLog);
+
+    if (pkgsLog.exists()){
+        if (pkgsLog.open(QIODevice::ReadOnly)){
+            QTextStream content(&pkgsLog);
+            while (!content.atEnd()){
+                QString tmpLine=content.readLine().remove('\n');
+                if (!tmpLine.isEmpty()){
+                    QStringList tmpPkg=tmpLine.split(" ");
+                    for (const QString &pkg : tmpPkg){
+                        if (!pkg.isEmpty()){
+                            if (!lastInstalledPkg.contains(pkg)){
+                                lastInstalledPkg.prepend(pkg);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            pkgsLog.close();
+        }
+    }
+
+    return lastInstalledPkg;
 
 }

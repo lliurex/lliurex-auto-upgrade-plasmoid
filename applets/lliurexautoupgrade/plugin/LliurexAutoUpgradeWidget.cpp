@@ -52,9 +52,9 @@ void LliurexAutoUpgradeWidget::plasmoidMode(){
 
 }
 
-void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedPkg, QString lastExecutionTime){
+void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionTime){
 
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<actionCode<<" Instaled pkg: "<<installedPkg;
+    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<actionCode;
     closeAllNotifications();
     setCurrentStackIndex(0);
     setShowDetailsBtn(false);
@@ -102,6 +102,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedP
     }
 
     if (actionCode==4 || actionCode==5){
+        QStringList installedPkg=m_utils->getPkgsInstalledInSession();
         setLastInstalledPkg(installedPkg);
         if (!installedPkg.isEmpty()){
             setShowDetailsBtn(true);
