@@ -18,6 +18,7 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
    
 {
     m_utils->cleanCache();
+    m_utils->getPkgsInstalledInSession();
     notificationTitle=i18n("LliureX-Auto-Upgrade");
     notificationBody=i18n("Ready to check status");
     notificationHead=i18n("Last execution:");
@@ -102,7 +103,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
     }
 
     if (actionCode==4 || actionCode==5){
-        QStringList installedPkg=m_utils->getPkgsInstalledInSession();
+        QStringList installedPkg=m_utils->lastInstalledPkg;
         setLastInstalledPkg(installedPkg);
         if (!installedPkg.isEmpty()){
             setShowDetailsBtn(true);

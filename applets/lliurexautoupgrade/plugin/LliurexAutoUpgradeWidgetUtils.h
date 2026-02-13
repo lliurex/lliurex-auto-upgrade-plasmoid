@@ -19,12 +19,12 @@ public:
    LliurexAutoUpgradeWidgetUtils(QObject *parent = nullptr);
 
    QString m_unitName="lliurex-auto-upgrade.service";
-
+   QStringList lastInstalledPkg;
    void cleanCache();
    bool showWidget();
    bool testListener();
    bool startListener();
-   QStringList getPkgsInstalledInSession();
+   void getPkgsInstalledInSession();
 
 signals:
 
@@ -36,7 +36,6 @@ private:
     QString lastUpdate;
     int actionCode=1;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
-    QStringList lastInstalledPkg;
     QString pkgInstalledLog="/run/lliurex-auto-upgrade/installed_packages.log";
 
     QString getInstalledVersion();

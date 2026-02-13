@@ -209,7 +209,7 @@ QString LliurexAutoUpgradeWidgetUtils::getLastExecutionTime(){
 
 }
 
-QStringList LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
+void LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
 
     QFile pkgsLog(pkgInstalledLog);
 
@@ -233,7 +233,5 @@ QStringList LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
             pkgsLog.close();
         }
     }
-
-    return lastInstalledPkg;
 
 }
