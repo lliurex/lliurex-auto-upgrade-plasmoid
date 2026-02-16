@@ -18,6 +18,7 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
    
 {
     m_utils->cleanCache();
+    m_utils->getPkgsInstalledInSession();
     notificationTitle=i18n("LliureX-Auto-Upgrade");
     notificationBody=i18n("Ready to check status");
     notificationHead=i18n("Last execution:");
@@ -52,9 +53,9 @@ void LliurexAutoUpgradeWidget::plasmoidMode(){
 
 }
 
-void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedPkg, QString lastExecutionTime){
+void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionTime){
 
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<actionCode<<" Instaled pkg: "<<installedPkg;
+    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<actionCode;
     closeAllNotifications();
     setCurrentStackIndex(0);
     setShowDetailsBtn(false);
@@ -102,6 +103,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QStringList installedP
     }
 
     if (actionCode==4 || actionCode==5){
+        QStringList installedPkg=m_utils->lastInstalledPkg;
         setLastInstalledPkg(installedPkg);
         if (!installedPkg.isEmpty()){
             setShowDetailsBtn(true);

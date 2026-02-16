@@ -106,7 +106,7 @@ private:
 
 private slots:
     
-    void manageState(int actionCode,QStringList installedPkg,QString lastExecutionTime);
+    void manageState(int actionCode,QString lastExecutionTime);
 
 
 };
