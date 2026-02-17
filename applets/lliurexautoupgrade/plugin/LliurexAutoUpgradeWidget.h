@@ -96,7 +96,6 @@ private:
     QString notificationHead;
     QString notificationFoot;
     uint lastNotificationId;
-    QDBusInterface *notifyInterface; 
     LliurexAutoUpgradeWidgetUtils *m_utils;
     QPointer<KNotification> m_notification;
     void plasmoidMode();
@@ -107,7 +106,7 @@ private:
 private slots:
     
     void manageState(int actionCode,QString lastExecutionTime);
-
+    void enableWidget(bool success,QString error);
 
 };
 
