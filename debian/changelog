@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.6) jammy; urgency=medium
+
+  * Changed to prevent slow startup
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 17 Feb 2026 14:27:32 +0100
+
 lliurex-auto-upgrade-plasmoid (0.1.5) jammy; urgency=medium
 
   * Checked if packages have been installed before starting widget
