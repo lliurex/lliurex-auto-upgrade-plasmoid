@@ -85,59 +85,58 @@ QString LliurexAutoUpgradeWidgetUtils::getInstalledVersion(){
 
 bool LliurexAutoUpgradeWidgetUtils::showWidget(){
 
-    QFile disabelToken;
-    disabelToken.setFileName(disableAutoUpgrade);
+    QFile disableToken;
+    disableToken.setFileName(disableAutoUpgrade);
 
-    if (disabelToken.exists()){
+    if (disableToken.exists()){
         return false;
     }else{
         return true;
     }
 }  
 
-bool LliurexAutoUpgradeWidgetUtils::testListener(){
+bool LliurexAutoUpgradeWidgetUtils::createInterface(){
 
- if (!QDBusConnection::systemBus().isConnected()) {
-    qDebug() << "[LLIUREX-AUTO-UPGRADE]: Cannot connect to the system D-Bus!";
-    return false;
- }else{
-    return true;
- }
-
-}
- 
-bool LliurexAutoUpgradeWidgetUtils::startListener(){
-
-    QDBusInterface managerInterface("org.freedesktop.systemd1",
+    if (!QDBusConnection::systemBus().isConnected()) {
+        qDebug() << "[LLIUREX-AUTO-UPGRADE]: Cannot connect to the system D-Bus!";
+        return false;
+    }else{
+        managerInterface=new QDBusInterface("org.freedesktop.systemd1",
                                         "/org/freedesktop/systemd1",
                                         "org.freedesktop.systemd1.Manager",
                                         QDBusConnection::systemBus());
-
-    
-
-    if (managerInterface.isValid()){
-        QDBusReply<QDBusObjectPath> reply=managerInterface.call("GetUnit",m_unitName);
-        QString m_unitPath=reply.value().path();
-
-        QDBusConnection::systemBus().connect(
-                "org.freedesktop.systemd1",       // sender service
-                m_unitPath,                         // object path
-                "org.freedesktop.DBus.Properties",// interface
-                "PropertiesChanged",              // signal name
-                this,                             // receiver QObject
-                SLOT(onPropertiesChanged(const QString&, const QVariantMap&, const QStringList&)));
-
-        QDBusMessage subscribeCall = managerInterface.call("Subscribe");
-            if (subscribeCall.type() == QDBusMessage::ErrorMessage) {
-                qDebug() << "[LLIUREX-AUTO-UPGRADE]: Failed to subscribe to systemd D-Bus signals:" << subscribeCall.errorMessage();
-                return false;
-            } else {
-                qDebug() << "[LLIUREX-AUTO-UPGRADE]: Successfully subscribed to systemd manager signals.";
-                return true;
-            }
-    }else{
-        return false;
+       
+        if (managerInterface->isValid()){
+            return true;
+        }else{
+            return false;
+        }
     }
+
+}
+
+void LliurexAutoUpgradeWidgetUtils::createSubscription(){
+
+    QDBusReply<QDBusObjectPath> reply=managerInterface->call("GetUnit",m_unitName);
+    QString m_unitPath=reply.value().path();
+
+    QDBusConnection::systemBus().connect(
+            "org.freedesktop.systemd1",       // sender service
+            m_unitPath,                         // object path
+            "org.freedesktop.DBus.Properties",// interface
+            "PropertiesChanged",              // signal name
+            this,                             // receiver QObject
+            SLOT(onPropertiesChanged(const QString&, const QVariantMap&, const QStringList&)));
+
+    QDBusPendingCall pendingCall = managerInterface->asyncCall("Subscribe");
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pendingCall,this);
+
+    connect(watcher, &QDBusPendingCallWatcher::finished,this,[this](QDBusPendingCallWatcher *self){
+        QDBusPendingReply<void>reply=*self;
+        emit subscriptionFinished(!reply.isError(),reply.error().message());
+        self->deleteLater();
+    });
+
 }
 
 void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interfaceName, const QVariantMap& changedProperties, const QStringList &invalidatedProperties)

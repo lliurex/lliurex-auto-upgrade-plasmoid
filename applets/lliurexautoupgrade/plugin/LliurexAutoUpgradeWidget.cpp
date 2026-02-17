@@ -8,8 +8,8 @@
 #include <QtCore/QStringList>
 
 #include <QDBusConnection>
-#include <QDBusInterface>
-#include <QDBusReply>
+#include <QDBusMessage>
+
 
 LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     : QObject(parent)
@@ -23,10 +23,6 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     notificationBody=i18n("Ready to check status");
     notificationHead=i18n("Last execution:");
     notificationFoot=i18n("Wait for next check");
-    notifyInterface=new QDBusInterface("org.freedesktop.Notifications",
-                                   "/org/freedesktop/Notifications",
-                                   "org.freedesktop.Notifications",
-                                   QDBusConnection::sessionBus()); 
     setSubToolTip(notificationBody);
     plasmoidMode();
 
@@ -35,22 +31,29 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
 void LliurexAutoUpgradeWidget::plasmoidMode(){
 
     if (!m_utils->showWidget()){
-       changeTryIconState(2);
+        changeTryIconState(2);
     }else{
-        if (m_utils->testListener()){
-            if (m_utils->startListener()){
-                changeTryIconState(0);
-                connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
-            }else{
-                disableApplet();
-            }
-        }else{
+        if (m_utils->createInterface()){
+            m_utils->createSubscription();
+            changeTryIconState(1);
+            connect(m_utils,&LliurexAutoUpgradeWidgetUtils::subscriptionFinished,this,&LliurexAutoUpgradeWidget::enableWidget);
+         }else{
             disableApplet();
         }
-      
-
     }
 
+}
+
+void LliurexAutoUpgradeWidget::enableWidget(bool success,QString error){
+
+    if (success){
+        changeTryIconState(0);
+        connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
+        qDebug() << "[LLIUREX-AUTO-UPGRADE]: Successfully subscribed to systemd manager signals.";
+    }else{
+        qDebug() << "[LLIUREX-AUTO-UPGRADE]: Failed to subscribe to systemd D-Bus signals:" << error;
+        disableApplet();
+    }
 }
 
 void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionTime){
@@ -129,14 +132,23 @@ void LliurexAutoUpgradeWidget::disableApplet(){
 
 void LliurexAutoUpgradeWidget::sendNotification(){
     
-    if (notifyInterface->isValid()){
+   if (QDBusConnection::sessionBus().isConnected()) {
+        QDBusMessage msg= QDBusMessage::createMethodCall("org.freedesktop.Notifications",
+                                       "/org/freedesktop/Notifications",
+                                       "org.freedesktop.Notifications",
+                                       "Notify" 
+                                       );
+
         uint replacesId=0;
         QStringList actions;
         QVariantMap hints;
         hints.insert("desktop-entry","lliurex-auto-upgrade-plasmoid");
-        QDBusReply<uint> reply=notifyInterface->call("Notify","LliureX-Auto-Upgrade",replacesId,"lliurex-auto-upgrade",notificationBody,"",actions,hints,0);
-        if (reply.isValid()){
-            lastNotificationId=reply.value();
+        msg << "LliureX-Auto-Upgrade" << replacesId << "lliurex-auto-upgrade" << notificationBody << "" << actions << hints << 0; 
+        QDBusMessage reply=QDBusConnection::sessionBus().call(msg);
+        if (reply.type()== QDBusMessage::ReplyMessage){
+            lastNotificationId=reply.arguments().at(0).toUInt();
+        }else{
+            lastNotificationId=0;
         }
     }
 }
@@ -150,8 +162,14 @@ void LliurexAutoUpgradeWidget::closeAllNotifications(){
     }
 
     if (referenceId<lastNotificationId){
-        if (notifyInterface->isValid()){
-            notifyInterface->call("CloseNotification",lastNotificationId);
+        if (QDBusConnection::sessionBus().isConnected()) {
+            QDBusMessage msg=QDBusMessage::createMethodCall("org.freedesktop.Notifications",
+                                       "/org/freedesktop/Notifications",
+                                       "org.freedesktop.Notifications",
+                                       "CloseNotification" 
+                                       );
+            msg << lastNotificationId;
+            QDBusConnection::sessionBus().send(msg);
         }
     }
 }
