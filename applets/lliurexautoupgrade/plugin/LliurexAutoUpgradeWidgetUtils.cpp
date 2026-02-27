@@ -117,24 +117,42 @@ bool LliurexAutoUpgradeWidgetUtils::createInterface(){
 
 void LliurexAutoUpgradeWidgetUtils::createSubscription(){
 
-    QDBusReply<QDBusObjectPath> reply=managerInterface->call("GetUnit",m_unitName);
-    QString m_unitPath=reply.value().path();
-
-    QDBusConnection::systemBus().connect(
-            "org.freedesktop.systemd1",       // sender service
-            m_unitPath,                         // object path
-            "org.freedesktop.DBus.Properties",// interface
-            "PropertiesChanged",              // signal name
-            this,                             // receiver QObject
-            SLOT(onPropertiesChanged(const QString&, const QVariantMap&, const QStringList&)));
-
-    QDBusPendingCall pendingCall = managerInterface->asyncCall("Subscribe");
-    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pendingCall,this);
+    QDBusPendingCall subscriptionCall = managerInterface->asyncCall("Subscribe");
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(subscriptionCall,this);
 
     connect(watcher, &QDBusPendingCallWatcher::finished,this,[this](QDBusPendingCallWatcher *self){
-        QDBusPendingReply<void>reply=*self;
-        emit subscriptionFinished(!reply.isError(),reply.error().message());
+        QDBusPendingReply<void>subReply=*self;
         self->deleteLater();
+
+        if (subReply.isError()){
+            emit subscriptionFinished(false,subReply.error().message());
+            return;
+        }
+
+        QDBusPendingCall unitCall = managerInterface->asyncCall("GetUnit", m_unitName);
+        QDBusPendingCallWatcher *unitWatcher = new QDBusPendingCallWatcher(unitCall, this);
+        
+        connect(unitWatcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *uSelf) {
+            QDBusPendingReply<QDBusObjectPath> unitReply = *uSelf;
+            uSelf->deleteLater();
+
+            if (!unitReply.isError()) {
+                QString path = unitReply.value().path();
+
+                QDBusConnection::systemBus().connect(
+                    "org.freedesktop.systemd1",
+                    path,
+                    "org.freedesktop.DBus.Properties",
+                    "PropertiesChanged",
+                    this,
+                    SLOT(onPropertiesChanged(const QString&, const QVariantMap&, const QStringList&)));
+
+                emit subscriptionFinished(true, "");
+            }else{
+                emit subscriptionFinished(false, unitReply.error().message());
+            }
+        });
+
     });
 
 }
