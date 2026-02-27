@@ -139,7 +139,6 @@ void LliurexAutoUpgradeWidgetUtils::createSubscription(){
             if (!unitReply.isError()) {
                 QString path = unitReply.value().path();
 
-                // 3. Conectamos las señales de la unidad específica
                 QDBusConnection::systemBus().connect(
                     "org.freedesktop.systemd1",
                     path,
