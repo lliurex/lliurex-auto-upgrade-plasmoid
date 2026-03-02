@@ -34,10 +34,10 @@ void LliurexAutoUpgradeWidget::plasmoidMode(){
         changeTryIconState(2);
     }else{
         if (m_utils->createInterface()){
-            m_utils->createSubscription();
             changeTryIconState(1);
             connect(m_utils,&LliurexAutoUpgradeWidgetUtils::subscriptionFinished,this,&LliurexAutoUpgradeWidget::enableWidget);
-         }else{
+            m_utils->createSubscription();
+        }else{
             disableApplet();
         }
     }
