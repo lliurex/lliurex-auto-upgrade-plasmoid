@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.8) jammy; urgency=medium
+
+  * Minor fixed
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 02 Mar 2026 14:26:02 +0100
+
 lliurex-auto-upgrade-plasmoid (0.1.7) jammy; urgency=medium
 
   * Changed to prevent loss of dbus signals
