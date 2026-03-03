@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.9) jammy; urgency=medium
+
+  * Minor fixed
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 03 Mar 2026 13:16:40 +0100
+
 lliurex-auto-upgrade-plasmoid (0.1.8) jammy; urgency=medium
 
   * Minor fixed
