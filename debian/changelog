@@ -1,6 +1,12 @@
+lliurex-auto-upgrade-plasmoid (1.3.3) noble; urgency=medium
+
+  * Minor fixes
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 03 Mar 2026 15:30:15 +0100
+
 lliurex-auto-upgrade-plasmoid (1.3.2) noble; urgency=medium
 
-  * Minor fixed
+  * Minor fixes
   
  -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 02 Mar 2026 14:24:52 +0100
 
