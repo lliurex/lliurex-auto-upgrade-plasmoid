@@ -24,6 +24,8 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     notificationHead=i18n("Last execution:");
     notificationFoot=i18n("Wait for next check");
     setSubToolTip(notificationBody);
+    connect(m_utils,&LliurexAutoUpgradeWidgetUtils::subscriptionFinished,this,&LliurexAutoUpgradeWidget::enableWidget);
+    connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
     plasmoidMode();
 
 }  
@@ -35,7 +37,6 @@ void LliurexAutoUpgradeWidget::plasmoidMode(){
     }else{
         if (m_utils->createInterface()){
             changeTryIconState(1);
-            connect(m_utils,&LliurexAutoUpgradeWidgetUtils::subscriptionFinished,this,&LliurexAutoUpgradeWidget::enableWidget);
             m_utils->createSubscription();
         }else{
             disableApplet();
@@ -48,7 +49,6 @@ void LliurexAutoUpgradeWidget::enableWidget(bool success,QString error){
 
     if (success){
         changeTryIconState(0);
-        connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
         qDebug() << "[LLIUREX-AUTO-UPGRADE]: Successfully subscribed to systemd manager signals.";
     }else{
         qDebug() << "[LLIUREX-AUTO-UPGRADE]: Failed to subscribe to systemd D-Bus signals:" << error;
