@@ -11,6 +11,7 @@
 #include <QDBusReply>
 #include <QDate>
 #include <QTime>
+#include <QtConcurrent>
 
 #include <tuple>
 #include <sys/types.h>
@@ -21,6 +22,37 @@ LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
        
 {
     user=qgetenv("USER");
+}
+
+void LliurexAutoUpgradeWidgetUtils::startUtils(){
+
+    QPointer<LliurexAutoUpgradeWidgetUtils>safeThis(this);
+
+    QtConcurrent::run([safeThis]() {
+
+        if (!safeThis){
+            return;
+        }
+
+        bool showWidget=false;
+        bool startOk=false;
+
+        try{
+            safeThis->cleanCache();
+            showWidget=safeThis->showWidget();
+            if (showWidget){
+                safeThis->getPkgsInstalledInSession();
+                startOk=safeThis->createInterface();
+            }
+        }catch (std::exception& e){
+            qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Error initializing widget: " <<e.what();
+        } 
+
+        if (safeThis){
+            emit safeThis->startUtilsFinished(showWidget,startOk);
+        }
+
+    });
 }
 
 void LliurexAutoUpgradeWidgetUtils::cleanCache(){

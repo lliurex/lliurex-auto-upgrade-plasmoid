@@ -17,30 +17,31 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
 
    
 {
-    m_utils->cleanCache();
-    m_utils->getPkgsInstalledInSession();
+   
     notificationTitle=i18n("LliureX-Auto-Upgrade");
     notificationBody=i18n("Ready to check status");
     notificationHead=i18n("Last execution:");
     notificationFoot=i18n("Wait for next check");
     setSubToolTip(notificationBody);
+    connect(m_utils,&LliurexAutoUpgradeWidgetUtils::startUtilsFinished,this,&LliurexAutoUpgradeWidget::handleStartFinished);
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::subscriptionFinished,this,&LliurexAutoUpgradeWidget::enableWidget);
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
-    plasmoidMode();
+    m_utils->startUtils();
+
 
 }  
 
-void LliurexAutoUpgradeWidget::plasmoidMode(){
+void LliurexAutoUpgradeWidget::handleStartFinished(bool showWidget,bool startOk){
 
-    if (!m_utils->showWidget()){
-        changeTryIconState(2);
-    }else{
-        if (m_utils->createInterface()){
+    if (showWidget){
+        if (startOk){
             changeTryIconState(1);
             m_utils->createSubscription();
         }else{
             disableApplet();
         }
+    }else{
+        changeTryIconState(2);
     }
 
 }
