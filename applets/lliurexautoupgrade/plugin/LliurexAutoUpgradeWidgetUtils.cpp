@@ -11,7 +11,8 @@
 #include <QDBusReply>
 #include <QDate>
 #include <QTime>
-
+#include <QThreadPool>
+#include <QPointer>
 #include <tuple>
 #include <sys/types.h>
 
@@ -21,6 +22,37 @@ LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
        
 {
     user=qgetenv("USER");
+}
+
+void LliurexAutoUpgradeWidgetUtils::startWidget(){
+
+    QPointer<LliurexAutoUpgradeWidgetUtils>safeThis(this);
+
+    QThreadPool::globalInstance()->start([safeThis]() {
+
+        if (!safeThis){
+            return;
+        }
+
+        bool showWidget=false;
+        bool startOk=false;
+
+        try{
+            safeThis->cleanCache();
+            showWidget=safeThis->showWidget();
+            if (showWidget){
+                safeThis->getPkgsInstalledInSession();
+                startOk=safeThis->createInterface();
+            }
+        }catch (std::exception& e){
+            qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Error initializing widget: " <<e.what();
+        } 
+
+        if (safeThis){
+            emit safeThis->startWidgetFinished(showWidget,startOk);
+        }
+
+    });
 }
 
 void LliurexAutoUpgradeWidgetUtils::cleanCache(){
@@ -169,7 +201,14 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 QString lastExecution="";
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
                 
-                if (newState.contains("First run") || newState.contains("dpkg to finish")){
+                if (newState.contains("First run")){
+                    if (!checkFailed){
+                        actionCode=1;
+                    }else{
+                        actionCode=6;
+                        lastExecution=getLastExecutionTime();
+                    }
+                }else if (newState.contains("dpkg to finish")){
                     actionCode=1;
                 }else if (newState.contains("remote file")){
                     actionCode=2;
@@ -180,12 +219,15 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     QString tmpPkg=newState.split(": ")[1];
                     getLastInstalledPkg(tmpPkg);
                 }else if (newState.contains("Installing finished")){
+                    checkFailed=false;
                     actionCode=4;
                     lastExecution=getLastExecutionTime();
                 }else if (newState.contains("Nothing to execute")){
+                    checkFailed=false;
                     actionCode=5;
                     lastExecution=getLastExecutionTime();
                 }else if (newState.contains("Failed to")){
+                    checkFailed=true;
                     actionCode=6;
                     lastExecution=getLastExecutionTime();
                 }
