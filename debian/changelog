@@ -1,3 +1,10 @@
+lliurex-auto-upgrade-plasmoid (0.1.10) jammy; urgency=medium
+
+  * Improved startup
+  * Improved feedback when error ocurrs
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 09 Mar 2026 11:29:38 +0100
+
 lliurex-auto-upgrade-plasmoid (0.1.9) jammy; urgency=medium
 
   * Minor fixed
