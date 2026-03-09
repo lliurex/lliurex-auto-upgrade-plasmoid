@@ -12,6 +12,7 @@
 #include <QDate>
 #include <QTime>
 #include <QtConcurrent>
+#include <QPointer>
 
 #include <tuple>
 #include <sys/types.h>
@@ -201,7 +202,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 QString lastExecution="";
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
                 
-                if (newState.contains("First run") {
+                if (newState.contains("First run")) {
                     if (!checkFailed){
                         actionCode=1;
                     }else{
