@@ -105,6 +105,7 @@ private:
 
 private slots:
     
+    void handleStartFinished(bool showWidget,bool startOk);
     void manageState(int actionCode,QString lastExecutionTime);
     void enableWidget(bool success,QString error);
 
