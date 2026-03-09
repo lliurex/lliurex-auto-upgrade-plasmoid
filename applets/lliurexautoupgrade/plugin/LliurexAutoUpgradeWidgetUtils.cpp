@@ -24,7 +24,7 @@ LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
     user=qgetenv("USER");
 }
 
-void LliurexAutoUpgradeWidgetUtils::startUtils(){
+void LliurexAutoUpgradeWidgetUtils::startWidget(){
 
     QPointer<LliurexAutoUpgradeWidgetUtils>safeThis(this);
 
@@ -49,7 +49,7 @@ void LliurexAutoUpgradeWidgetUtils::startUtils(){
         } 
 
         if (safeThis){
-            emit safeThis->startUtilsFinished(showWidget,startOk);
+            emit safeThis->startWidgetFinished(showWidget,startOk);
         }
 
     });
@@ -201,7 +201,14 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 QString lastExecution="";
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
                 
-                if (newState.contains("First run") || newState.contains("dpkg to finish")){
+                if (newState.contains("First run") {
+                    if (!checkFailed){
+                        actionCode=1;
+                    }else{
+                        actionCode=6;
+                        lastExecution=getLastExecutionTime();
+                    }
+                }else if (newState.contains("dpkg to finish")){
                     actionCode=1;
                 }else if (newState.contains("remote file")){
                     actionCode=2;
@@ -212,12 +219,15 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     QString tmpPkg=newState.split(": ")[1];
                     getLastInstalledPkg(tmpPkg);
                 }else if (newState.contains("Installing finished")){
+                    checkFailed=false;
                     actionCode=4;
                     lastExecution=getLastExecutionTime();
                 }else if (newState.contains("Nothing to execute")){
+                    checkFailed=false;
                     actionCode=5;
                     lastExecution=getLastExecutionTime();
                 }else if (newState.contains("Failed to")){
+                    checkFailed=true;
                     actionCode=6;
                     lastExecution=getLastExecutionTime();
                 }

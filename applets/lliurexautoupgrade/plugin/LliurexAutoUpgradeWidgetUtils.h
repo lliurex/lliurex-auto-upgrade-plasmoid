@@ -22,13 +22,13 @@ public:
    QString m_unitName="lliurex-auto-upgrade.service";
    QStringList lastInstalledPkg;
   
-   void startUtils();
+   void startWidget();
    bool startListener();
    void createSubscription();
 
 signals:
 
-    void startUtilsFinished(bool showWidget,bool startOk);
+    void startWidgetFinished(bool showWidget,bool startOk);
     void unitStateChanged(int actionCode,QString lastExecutionTime);
     void subscriptionFinished(bool success, QString error );
 
@@ -37,6 +37,7 @@ private:
     QString user;
     QString lastUpdate;
     int actionCode=1;
+    bool checkFailed=false;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
     QString pkgInstalledLog="/run/lliurex-auto-upgrade/installed_packages.log";
     QDBusInterface *managerInterface;

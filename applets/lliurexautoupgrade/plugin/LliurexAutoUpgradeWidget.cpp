@@ -23,10 +23,10 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     notificationHead=i18n("Last execution:");
     notificationFoot=i18n("Wait for next check");
     setSubToolTip(notificationBody);
-    connect(m_utils,&LliurexAutoUpgradeWidgetUtils::startUtilsFinished,this,&LliurexAutoUpgradeWidget::handleStartFinished);
+    connect(m_utils,&LliurexAutoUpgradeWidgetUtils::startWidgetFinished,this,&LliurexAutoUpgradeWidget::handleStartFinished);
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::subscriptionFinished,this,&LliurexAutoUpgradeWidget::enableWidget);
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
-    m_utils->startUtils();
+    m_utils->startWidget();
 
 
 }  
