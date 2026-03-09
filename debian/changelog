@@ -1,3 +1,10 @@
+lliurex-auto-upgrade-plasmoid (1.3.4) noble; urgency=medium
+
+  * Improved startup
+  * Improved feedback when error ocurrs
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 09 Mar 2026 11:31:45 +0100
+
 lliurex-auto-upgrade-plasmoid (1.3.3) noble; urgency=medium
 
   * Minor fixes
