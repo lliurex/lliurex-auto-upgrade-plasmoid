@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (1.3.5) noble; urgency=medium
+
+  * Fixed bug to detect installation step
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Thu, 12 Mar 2026 09:02:06 +0100
+
 lliurex-auto-upgrade-plasmoid (1.3.4) noble; urgency=medium
 
   * Improved startup
