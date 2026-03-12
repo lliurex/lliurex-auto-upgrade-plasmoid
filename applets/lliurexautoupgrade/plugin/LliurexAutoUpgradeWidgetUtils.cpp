@@ -150,10 +150,17 @@ bool LliurexAutoUpgradeWidgetUtils::createInterface(){
 
 void LliurexAutoUpgradeWidgetUtils::createSubscription(){
 
+    if (!managerInterface || !managerInterface->isValid()){
+        emit subscriptionFinished(false,"DBus interface not valid");
+        return;
+    }
     QDBusPendingCall subscriptionCall = managerInterface->asyncCall("Subscribe");
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(subscriptionCall,this);
 
     connect(watcher, &QDBusPendingCallWatcher::finished,this,[this](QDBusPendingCallWatcher *self){
+        
+        if (!self) return;
+
         QDBusPendingReply<void>subReply=*self;
         self->deleteLater();
 
@@ -166,13 +173,16 @@ void LliurexAutoUpgradeWidgetUtils::createSubscription(){
         QDBusPendingCallWatcher *unitWatcher = new QDBusPendingCallWatcher(unitCall, this);
         
         connect(unitWatcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *uSelf) {
+            
+            if (!uSelf) return;
+
             QDBusPendingReply<QDBusObjectPath> unitReply = *uSelf;
             uSelf->deleteLater();
 
             if (!unitReply.isError()) {
                 QString path = unitReply.value().path();
 
-                QDBusConnection::systemBus().connect(
+                bool connected=QDBusConnection::systemBus().connect(
                     "org.freedesktop.systemd1",
                     path,
                     "org.freedesktop.DBus.Properties",
@@ -180,7 +190,11 @@ void LliurexAutoUpgradeWidgetUtils::createSubscription(){
                     this,
                     SLOT(onPropertiesChanged(const QString&, const QVariantMap&, const QStringList&)));
 
-                emit subscriptionFinished(true, "");
+                if (connected){
+                    emit subscriptionFinished(true, "");
+                }else{
+                    emit subscriptionFinished(false, "DBusConnection fails");
+                }
             }else{
                 emit subscriptionFinished(false, unitReply.error().message());
             }
@@ -201,7 +215,6 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 lastUpdate=newState;
                 QString lastExecution="";
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
-                
                 if (newState.contains("First run")) {
                     if (!checkFailed){
                         actionCode=1;
@@ -215,7 +228,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     actionCode=2;
                 }else if (newState.contains("before installing")){
                     actionCode=3;
-                }else if (newState.contains("Installling packages")){
+                }else if (newState.contains("Installing packages")){
                     actionCode=3;
                     QString tmpPkg=newState.split(": ")[1];
                     getLastInstalledPkg(tmpPkg);
