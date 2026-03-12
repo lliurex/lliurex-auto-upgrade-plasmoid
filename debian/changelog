@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.11) jammy; urgency=medium
+
+  * Fixed bug to detect installation step
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Thu, 12 Mar 2026 08:58:21 +0100
+
 lliurex-auto-upgrade-plasmoid (0.1.10) jammy; urgency=medium
 
   * Improved startup
