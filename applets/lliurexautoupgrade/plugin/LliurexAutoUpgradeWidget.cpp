@@ -5,6 +5,7 @@
 #include <KFormat>
 #include <KNotification>
 #include <QDebug>
+#include <QTimer>
 #include <QtCore/QStringList>
 
 #include <QDBusConnection>
@@ -22,12 +23,13 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     notificationBody=i18n("Ready to check status");
     notificationHead=i18n("Last execution:");
     notificationFoot=i18n("Wait for next check");
-    setSubToolTip(notificationBody);
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::startWidgetFinished,this,&LliurexAutoUpgradeWidget::handleStartFinished);
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::subscriptionFinished,this,&LliurexAutoUpgradeWidget::enableWidget);
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
-    m_utils->startWidget();
-
+    
+    QTimer::singleShot(0,this,[this](){
+        m_utils->startWidget();
+    });
 
 }  
 
@@ -35,6 +37,7 @@ void LliurexAutoUpgradeWidget::handleStartFinished(bool showWidget,bool startOk)
 
     if (showWidget){
         if (startOk){
+            setSubToolTip(notificationBody);
             changeTryIconState(1);
             m_utils->createSubscription();
         }else{

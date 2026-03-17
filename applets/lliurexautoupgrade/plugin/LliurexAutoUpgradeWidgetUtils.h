@@ -34,7 +34,6 @@ signals:
 
 private:    
      
-    QString user;
     QString lastUpdate;
     int actionCode=1;
     bool checkFailed=false;
@@ -42,11 +41,9 @@ private:
     QString pkgInstalledLog="/run/lliurex-auto-upgrade/installed_packages.log";
     QDBusInterface *managerInterface;
 
-    void cleanCache();
     bool showWidget();
     void getPkgsInstalledInSession();
     bool createInterface();
-    QString getInstalledVersion();
     void getLastInstalledPkg(QString instaledPkg);
     QString getLastExecutionTime();
 

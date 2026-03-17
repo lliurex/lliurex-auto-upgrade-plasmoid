@@ -6,6 +6,8 @@
 #include <KNotification>
 #include <QDBusInterface>
 
+#include <QtQml/qqmlregistration.h>
+
 #include "LliurexAutoUpgradeWidgetUtils.h"
 
 
@@ -17,6 +19,17 @@ class AsyncDbus;
 class LliurexAutoUpgradeWidget : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+
+public:
+    /**
+     * System tray icon states.
+     */
+    enum TrayStatus {
+        ActiveStatus=0,
+        PassiveStatus,
+        HiddenStatus
+    };
 
 
     Q_PROPERTY(TrayStatus status READ status NOTIFY statusChanged)
@@ -29,17 +42,8 @@ class LliurexAutoUpgradeWidget : public QObject
     Q_PROPERTY(QStringList lastInstalledPkg READ lastInstalledPkg NOTIFY lastInstalledPkgChanged)
     Q_ENUMS(TrayStatus)
 
-public:
-    /**
-     * System tray icon states.
-     */
-    enum TrayStatus {
-        ActiveStatus=0,
-        PassiveStatus,
-        HiddenStatus
-    };
 
-    LliurexAutoUpgradeWidget(QObject *parent = nullptr);
+    explicit LliurexAutoUpgradeWidget(QObject *parent = nullptr);
 
     TrayStatus status() const;
     void changeTryIconState (int state);
