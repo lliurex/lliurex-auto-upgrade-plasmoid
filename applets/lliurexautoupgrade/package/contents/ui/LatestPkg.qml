@@ -5,7 +5,6 @@ import org.kde.plasma.plasmoid
 import org.kde.plasma.components as Components
 import org.kde.plasma.components as PC3
 import org.kde.kirigami as Kirigami
-import org.kde.plasma.private.lliurexautoupgrade 1.0
 
 Rectangle{
 	color:"transparent"
