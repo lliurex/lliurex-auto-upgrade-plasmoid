@@ -7,7 +7,7 @@ import org.kde.plasma.core 2.1 as PlasmaCore
 import org.kde.plasma.components 3.0 as PC3
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 
-import org.kde.plasma.private.lliurexautoupgrade 1.0
+import org.kde.plasma.private.lliurexautoupgrade 2.0
 // Item - the most basic plasmoid component, an empty container.
 Item {
 

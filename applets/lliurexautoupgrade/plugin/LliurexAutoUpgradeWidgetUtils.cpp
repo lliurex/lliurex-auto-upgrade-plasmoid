@@ -22,7 +22,7 @@ LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
     : QObject(parent)
        
 {
-    user=qgetenv("USER");
+
 }
 
 void LliurexAutoUpgradeWidgetUtils::startWidget(){
@@ -39,7 +39,6 @@ void LliurexAutoUpgradeWidgetUtils::startWidget(){
         bool startOk=false;
 
         try{
-            safeThis->cleanCache();
             showWidget=safeThis->showWidget();
             if (showWidget){
                 safeThis->getPkgsInstalledInSession();
@@ -55,66 +54,6 @@ void LliurexAutoUpgradeWidgetUtils::startWidget(){
 
     });
 }
-
-void LliurexAutoUpgradeWidgetUtils::cleanCache(){
-
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Clean cache";
-    QFile CURRENT_VERSION_TOKEN;
-    QDir cacheDir("/home/"+user+"/.cache/plasmashell/qmlcache");
-    QString currentVersion="";
-    bool clear=false;
-
-    CURRENT_VERSION_TOKEN.setFileName("/home/"+user+"/.config/lliurex-auto-upgrade-widget.conf");
-    QString installedVersion=getInstalledVersion();
-
-    if (!CURRENT_VERSION_TOKEN.exists()){
-        if (CURRENT_VERSION_TOKEN.open(QIODevice::WriteOnly)){
-            QTextStream data(&CURRENT_VERSION_TOKEN);
-            data<<installedVersion;
-            CURRENT_VERSION_TOKEN.close();
-            clear=true;
-        }
-    }else{
-        if (CURRENT_VERSION_TOKEN.open(QIODevice::ReadOnly)){
-            QTextStream content(&CURRENT_VERSION_TOKEN);
-            currentVersion=content.readLine();
-            CURRENT_VERSION_TOKEN.close();
-        }
-
-        if (currentVersion!=installedVersion){
-            if (CURRENT_VERSION_TOKEN.open(QIODevice::WriteOnly)){
-                QTextStream data(&CURRENT_VERSION_TOKEN);
-                data<<installedVersion;
-                CURRENT_VERSION_TOKEN.close();
-                clear=true;
-            }
-        }
-    } 
-    if (clear){
-        if (cacheDir.exists()){
-            cacheDir.removeRecursively();
-        }
-    }   
-
-}
-
-QString LliurexAutoUpgradeWidgetUtils::getInstalledVersion(){
-
-    QFile INSTALLED_VERSION_TOKEN;
-    QString installedVersion="";
-    
-    INSTALLED_VERSION_TOKEN.setFileName("/var/lib/lliurex-auto-upgrade-plasmoid/version");
-
-    if (INSTALLED_VERSION_TOKEN.exists()){
-        if (INSTALLED_VERSION_TOKEN.open(QIODevice::ReadOnly)){
-            QTextStream content(&INSTALLED_VERSION_TOKEN);
-            installedVersion=content.readLine();
-            INSTALLED_VERSION_TOKEN.close();
-        }
-    }
-    return installedVersion;
-
-}  
 
 bool LliurexAutoUpgradeWidgetUtils::showWidget(){
 
