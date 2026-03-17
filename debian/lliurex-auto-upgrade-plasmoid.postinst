@@ -22,6 +22,20 @@ case "$1" in
         newVersion=$(dpkg-query --showformat='${Version}' --show lliurex-auto-upgrade-plasmoid)
         tokenDir=/var/lib/lliurex-auto-upgrade-plasmoid/version
         echo "$newVersion" > "$tokenDir" || true
+
+        QML_DIR="/usr/share/plasma/plasmoids/org.kde.plasma.lliurexautoupgrade"
+
+        if [ -d "$QML_DIR" ];then
+            find "$QML_DIR" -name "*.qml" -exec touch {} + || true
+        fi
+        QML_DIR="/usr/lib/x86_64-linux-gnu/qt6/qml/org/kde/plasma/private/lliurexautoupgrade"
+
+        if [ -d "$QML_DIR" ];then
+            touch "$QML_DIR"/* || true
+            touch "$QML_DIR" || true
+        fi
+        kbuildsycoca6 --noincremental > /dev/null 2>&1 || true
+
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
