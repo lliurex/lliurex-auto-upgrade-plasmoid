@@ -34,7 +34,7 @@ target_link_libraries(${PLUGIN_TARGET} PRIVATE
 target_include_directories(${PLUGIN_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/plugin)                      
 ecm_finalize_qml_module(${PLUGIN_TARGET})
 
-install(TARGETS ${PLUGIN_TARGET} DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY DESTINATION ${KDE_INSTALL_QMLDIR}//org/kde/plasma/private/lliurexautoupgrade)
+install(TARGETS ${PLUGIN_TARGET} DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/plasma/private/lliurexautoupgrade)
 install(FILES "icons/lliurex-auto-upgrade.svg"
         DESTINATION ${KDE_INSTALL_ICONDIR}/hicolor/scalable/apps/)
 install(FILES "icons/lliurex-auto-upgrade-ok.svg"
