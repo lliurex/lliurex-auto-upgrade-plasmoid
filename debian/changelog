@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.12) jammy; urgency=medium
+
+  * Changed so that the cache doesn't have to be cleared on startup
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Fri, 20 Mar 2026 08:22:46 +0100
+
 lliurex-auto-upgrade-plasmoid (0.1.11) jammy; urgency=medium
 
   * Fixed bug to detect installation step
