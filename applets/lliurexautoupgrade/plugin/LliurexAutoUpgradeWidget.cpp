@@ -86,7 +86,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
         notificationBody=i18n("Installing packages.");
         setIconName("lliurex-auto-upgrade");
         setIconNamePh("lliurex-auto-upgrade");
-        setSubToolTip(notificationBody+" "+turnOffWarning);
+        setSubToolTip(notificationBody+"\n"+turnOffWarning);
         sendNotification();
      }else if (actionCode==4){
         notificationBody=i18n("Updates installed")+"\n"+notificationFoot;
@@ -151,14 +151,16 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
         notificationBody=i18n("Unattended upgrade is installing packages for the %1 component.",upgradeItem);
         setIconName("lliurex-auto-upgrade");
         setIconNamePh("lliurex-auto-upgrade");
-        setSubToolTip(notificationBody+"\n"+turnOffWarning);
+        QString message=notificationBody+" "+turnOffWarning;
+        setSubToolTip(message);
         m_upgradeNotification = new KNotification(QStringLiteral("RemoteAction"),KNotification::Persistent,this);
         m_upgradeNotification->setComponentName(QStringLiteral("lliurexautoupgrade"));
-        m_upgradeNotification->setTitle(notificationBody);
+        m_upgradeNotification->setTitle(message);
         m_upgradeNotification->setText("");
-        m_upgradeNotification->setIconName("lliurex-auto-upgrade-ok");
+        m_upgradeNotification->setIconName("lliurex-auto-upgrade");
         m_upgradeNotification->sendEvent();
     }else if (actionCode==14){
+        closeAllNotifications();
         lastUpradeItem=upgradeItem;
         notificationBody=i18n("Unattended upgrade has installed packages for the %1 component.",upgradeItem);
         setIconName("lliurex-auto-upgrade");
@@ -238,8 +240,9 @@ void LliurexAutoUpgradeWidget::sendNotification(){
         uint replacesId=0;
         QStringList actions;
         QVariantMap hints;
+        QString message=notificationBody+" "+turnOffWarning;
         hints.insert("desktop-entry","lliurex-auto-upgrade-plasmoid");
-        msg << "LliureX-Auto-Upgrade" << replacesId << "lliurex-auto-upgrade" << notificationBody << "" << actions << hints << 0; 
+        msg << "LliureX-Auto-Upgrade" << replacesId << "lliurex-auto-upgrade" << message << "" << actions << hints << 0; 
         QDBusMessage reply=QDBusConnection::sessionBus().call(msg);
         if (reply.type()== QDBusMessage::ReplyMessage){
             lastNotificationId=reply.arguments().at(0).toUInt();
