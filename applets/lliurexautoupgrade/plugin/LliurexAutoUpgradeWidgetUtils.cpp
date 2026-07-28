@@ -189,7 +189,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     actionCode=6;
                     lastExecution=getLastExecutionTime();
                 }else if (newState.contains("Starting unattended upgrades")){
-                    if (!updateFailed){
+                    if (!updatedFailed){
                         actionCode=7;
                         waitTime=getWaitTimeForUpgrade(newState);
                     }else{
@@ -197,42 +197,42 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                         lastExecution=getLastExecutionTime();
                     }
                 }else if (newState.contains("Gathering unattended upgrade")){
-                    updateFailed=false;
+                    updatedFailed=false;
                     actionCode=8;
                 }else if (newState.contains("upgrade is downloading")){
-                    updateFailed=false;
+                    updatedFailed=false;
                     actionCode=9;
                     upgradeItem=getUpgradeItem(newState);
                 }else if (newState.contains("have been downloaded")){
-                    updateFailed=false;
+                    updatedFailed=false;
                     actionCode=10;
                     upgradeItem=getUpgradeItem(newState);
                 }else if (newState.contains("downloaded every component")){
-                    updateFailed=false;
+                    updatedFailed=false;
                     actionCode=11;
                     lastExecution=getLastExecutionTime();
                 }else if (newState.contains("upgrade download limit reached")){
-                    updateFailed=false;
+                    updatedFailed=false;
                     actionCode=12;
                     lastExecution=getLastExecutionTime();
                 }else if (newState.contains("upgrade is installing")){
-                    updateFailed=false;
+                    updatedFailed=false;
                     actionCode=13;
                     upgradeItem=getUpgradeItem(newState);
                 }else if (newState.contains("have been installed")){
-                    updateFailed=false;
+                    updatedFailed=false;
                     actionCode=14;
                     upgradeItem=getUpgradeItem(newState);
                 }else if (newState.contains("installed every component.")){
-                    updateFailed=false;
+                    updatedFailed=false;
                     actionCode=15;
                     lastExecution=getLastExecutionTime();
                 }else if (newState.contains("upgrade install limit reached")){
-                    updateFailed=false;
+                    updatedFailed=false;
                     actionCode=16;
                     lastExecution=getLastExecutionTime();
                 }else if (newState.contains("upgrade failed")){
-                    updateFailed=true;
+                    updatedFailed=true;
                     actionCode=17;
                     lastExecution=getLastExecutionTime();
                 }
