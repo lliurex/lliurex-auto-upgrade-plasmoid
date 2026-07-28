@@ -13,9 +13,12 @@
 #include <QTime>
 #include <QtConcurrent>
 #include <QPointer>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 #include <tuple>
 #include <sys/types.h>
+#include <algorithm>
 
 
 LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
@@ -153,6 +156,8 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
             if (newState!=lastUpdate){
                 lastUpdate=newState;
                 QString lastExecution="";
+                QString upgradeItem="";
+                QString waitTime="";
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
                 if (newState.contains("First run")) {
                     if (!checkFailed){
@@ -183,9 +188,56 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     checkFailed=true;
                     actionCode=6;
                     lastExecution=getLastExecutionTime();
+                }else if (newState.contains("Starting unattended upgrades")){
+                    if (!updateFailed){
+                        actionCode=7;
+                        waitTime=getWaitTimeForUpgrade(newState);
+                    }else{
+                        actionCode=17;
+                        lastExecution=getLastExecutionTime();
+                    }
+                }else if (newState.contains("Gathering unattended upgrade")){
+                    updateFailed=false;
+                    actionCode=8;
+                }else if (newState.contains("upgrade is downloading")){
+                    updateFailed=false;
+                    actionCode=9;
+                    upgradeItem=getUpgradeItem(newState);
+                }else if (newState.contains("have been downloaded")){
+                    updateFailed=false;
+                    actionCode=10;
+                    upgradeItem=getUpgradeItem(newState);
+                }else if (newState.contains("downloaded every component")){
+                    updateFailed=false;
+                    actionCode=11;
+                    lastExecution=getLastExecutionTime();
+                }else if (newState.contains("upgrade download limit reached")){
+                    updateFailed=false;
+                    actionCode=12;
+                    lastExecution=getLastExecutionTime();
+                }else if (newState.contains("upgrade is installing")){
+                    updateFailed=false;
+                    actionCode=13;
+                    upgradeItem=getUpgradeItem(newState);
+                }else if (newState.contains("have been installed")){
+                    updateFailed=false;
+                    actionCode=14;
+                    upgradeItem=getUpgradeItem(newState);
+                }else if (newState.contains("installed every component.")){
+                    updateFailed=false;
+                    actionCode=15;
+                    lastExecution=getLastExecutionTime();
+                }else if (newState.contains("upgrade install limit reached")){
+                    updateFailed=false;
+                    actionCode=16;
+                    lastExecution=getLastExecutionTime();
+                }else if (newState.contains("upgrade failed")){
+                    updateFailed=true;
+                    actionCode=17;
+                    lastExecution=getLastExecutionTime();
                 }
 
-                emit unitStateChanged(actionCode,lastExecution);
+                emit unitStateChanged(actionCode,lastExecution,waitTime,upgradeItem);
             }
         }
       
@@ -219,6 +271,29 @@ QString LliurexAutoUpgradeWidgetUtils::getLastExecutionTime(){
     return lastTimeStamp;
 
 
+}
+
+QString LliurexAutoUpgradeWidgetUtils::getUpgradeItem(QString &message){
+
+    auto it = std::find_if(upgradeItems.begin(),upgradeItems.end(),[&message](const QString &upgradeItem){
+        return message.contains(upgradeItem,Qt::CaseInsensitive);   
+    });
+
+    return (it != upgradeItems.end()) ? *it:QString();
+
+}
+
+QString LliurexAutoUpgradeWidgetUtils::getWaitTimeForUpgrade(QString &message){
+
+    static const QRegularExpression regex(R"(\b(\d+)\s+seconds\b)");
+
+    QRegularExpressionMatch match=regex.match(&message);
+
+    if (match.hasMatch()){
+        return match.captured(1);
+    }
+
+    return QString();
 }
 
 void LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){

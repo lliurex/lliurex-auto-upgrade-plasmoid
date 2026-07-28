@@ -95,9 +95,15 @@ private:
     QString notificationBody;
     QString notificationHead;
     QString notificationFoot;
+    QString notificationUpgradeFoot;
+    QString turnOffWarning;
+    QString lastUpgradeDownloaded;
+    QString lastUpgradeInstalled;
+    QString lastUpradeItem;
     uint lastNotificationId;
     LliurexAutoUpgradeWidgetUtils *m_utils;
     QPointer<KNotification> m_notification;
+    QPointer<KNotification> m_upgradeNotification;
     void plasmoidMode();
     void disableApplet();
     void closeAllNotifications();
@@ -106,7 +112,7 @@ private:
 private slots:
     
     void handleStartFinished(bool showWidget,bool startOk);
-    void manageState(int actionCode,QString lastExecutionTime);
+    void manageState(int actionCode,QString lastExecutionTime,QString waitTime,QString upgradeItem);
     void enableWidget(bool success,QString error);
 
 };

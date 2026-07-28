@@ -23,6 +23,11 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     notificationBody=i18n("Ready to check status");
     notificationHead=i18n("Last execution:");
     notificationFoot=i18n("Wait for next check");
+    notificationUpgradeFoot=i18n("Wait for next reboot");
+    turnOffWarning=i18n("Do not turn off or restart the computer");
+    lastUpgradeDownloaded=i18n("Last component downloaded:");
+    lastUpgradeInstalled=i18n("Last component installed:");
+
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::startWidgetFinished,this,&LliurexAutoUpgradeWidget::handleStartFinished);
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::subscriptionFinished,this,&LliurexAutoUpgradeWidget::enableWidget);
     connect(m_utils,&LliurexAutoUpgradeWidgetUtils::unitStateChanged,this,&LliurexAutoUpgradeWidget::manageState);
@@ -60,7 +65,7 @@ void LliurexAutoUpgradeWidget::enableWidget(bool success,QString error){
     }
 }
 
-void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionTime){
+void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionTime,QString waitTime,QString upgradeItem){
 
     qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<actionCode;
     closeAllNotifications();
@@ -78,10 +83,10 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
         setIconNamePh("lliurex-auto-upgrade");
         setSubToolTip(notificationBody);
     }else if (actionCode==3){
-        notificationBody=i18n("Installing packages. Do not turn off or restart the computer");
+        notificationBody=i18n("Installing packages.");
         setIconName("lliurex-auto-upgrade");
         setIconNamePh("lliurex-auto-upgrade");
-        setSubToolTip(notificationBody);
+        setSubToolTip(notificationBody+" "+turnOffWarning);
         sendNotification();
      }else if (actionCode==4){
         notificationBody=i18n("Updates installed")+"\n"+notificationFoot;
@@ -103,6 +108,93 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
         setSubToolTip(headText+"\n"+notificationBody);
     }else if(actionCode==6){
         notificationBody=i18n("Error, process not completed")+"\n"+notificationFoot;
+        setIconName("lliurex-auto-upgrade-error");
+        setIconNamePh("lliurex-auto-upgrade-error");
+        QString headText=notificationHead+" "+lastExecutionTime;
+        setSubToolTip(headText+"\n"+notificationBody);
+    }else if (actionCode==7){
+        notificationBody=i18n("Ready to start unattended upgrade in %1 seconds",waitTime);
+        setIconName("lliurex-auto-upgrade-warning");
+        setIconNamePh("lliurex-auto-upgrade-warning");
+        setSubToolTip(notificationBody);
+    }else if (actionCode==8){
+        notificationBody=i18n("Gathering unattended upgrade package list");
+        setIconName("lliurex-auto-upgrade");
+        setIconNamePh("lliurex-auto-upgrade");
+        setSubToolTip(notificationBody);
+    }else if (actionCode==9){
+        notificationBody=i18n("Unattended upgrade is downloading packages for the %1 component",upgradeItem);
+        setIconName("lliurex-auto-upgrade");
+        setIconNamePh("lliurex-auto-upgrade");
+        setSubToolTip(notificationBody);
+    }else if (actionCode==10){
+        lastUpradeItem=upgradeItem;
+        notificationBody=i18n("Unattended upgrade have been downloaded packages for the %1 component",upgradeItem);
+        setIconName("lliurex-auto-upgrade");
+        setIconNamePh("lliurex-auto-upgrade");
+        setSubToolTip(notificationBody);
+    }else if (actionCode==11){
+        lastUpradeItem="";
+        notificationBody=i18n("Unattended upgrade has downloaded every component");
+        setIconName("lliurex-auto-upgrade-ok");
+        setIconNamePh("lliurex-auto-upgrade-ok");
+        QString headText=notificationHead+" "+lastExecutionTime;
+        setSubToolTip(headText+"\n"+notificationBody);
+    }else if (actionCode==12){
+        notificationBody=i18n("Unattended upgrade download limit reached")+"\n"+lastUpgradeDownloaded+" "+lastUpradeItem+"\n"+notificationUpgradeFoot;
+        setIconName("lliurex-auto-upgrade-ok");
+        setIconNamePh("lliurex-auto-upgrade-ok");
+        QString headText=notificationHead+" "+lastExecutionTime;
+        setSubToolTip(headText+"\n"+notificationBody); 
+    }else if (actionCode==13){
+        closeAllNotifications();
+        notificationBody=i18n("Unattended upgrade is installing packages for the %1 component.",upgradeItem);
+        setIconName("lliurex-auto-upgrade");
+        setIconNamePh("lliurex-auto-upgrade");
+        setSubToolTip(notificationBody+"\n"+turnOffWarning);
+        m_upgradeNotification = new KNotification(QStringLiteral("RemoteAction"),KNotification::Persistent,this);
+        m_upgradeNotification->setComponentName(QStringLiteral("lliurexautoupgrade"));
+        m_upgradeNotification->setTitle(notificationBody);
+        m_upgradeNotification->setText("");
+        m_upgradeNotification->setIconName("lliurex-auto-upgrade-ok");
+        m_upgradeNotification->sendEvent();
+    }else if (actionCode==14){
+        lastUpradeItem=upgradeItem;
+        notificationBody=i18n("Unattended upgrade has installed packages for the %1 component.",upgradeItem);
+        setIconName("lliurex-auto-upgrade");
+        setIconNamePh("lliurex-auto-upgrade");
+        setSubToolTip(notificationBody+"\n"+turnOffWarning);
+    }else if (actionCode==15){
+        closeAllNotifications();
+        lastUpradeItem="";
+        notificationBody=i18n("The system has been updated");
+        setIconName("lliurex-auto-upgrade-ok");
+        setIconNamePh("lliurex-auto-upgrade-ok");
+        QString headText=notificationHead+" "+lastExecutionTime;
+        setSubToolTip(headText+"\n"+notificationBody); 
+        m_notification = new KNotification(QStringLiteral("RemoteAction"),KNotification::CloseOnTimeout,this);
+        m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
+        m_notification->setTitle(notificationBody);
+        m_notification->setText("");
+        m_notification->setIconName("lliurex-auto-upgrade-ok");
+        m_notification->sendEvent();
+    }else if (actionCode==16){
+        closeAllNotifications();
+        notificationBody=i18n("Unattended upgrade install limit reached")+"\n"+lastUpgradeInstalled+" "+lastUpradeItem+"\n"+notificationUpgradeFoot;
+        setIconName("lliurex-auto-upgrade-ok");
+        setIconNamePh("lliurex-auto-upgrade-ok");
+        QString headText=notificationHead+" "+lastExecutionTime;
+        setSubToolTip(headText+"\n"+notificationBody); 
+        m_notification = new KNotification(QStringLiteral("RemoteAction"),KNotification::CloseOnTimeout,this);
+        m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
+        m_notification->setTitle(notificationBody);
+        m_notification->setText("");
+        m_notification->setIconName("lliurex-auto-upgrade-ok");
+        m_notification->sendEvent();
+    }else if(actionCode==17){
+        closeAllNotifications();
+        lastUpradeItem="";
+        notificationBody=i18n("Error, unattended upgrade failed. Canceling process");
         setIconName("lliurex-auto-upgrade-error");
         setIconNamePh("lliurex-auto-upgrade-error");
         QString headText=notificationHead+" "+lastExecutionTime;
@@ -163,6 +255,14 @@ void LliurexAutoUpgradeWidget::closeAllNotifications(){
 
     if (m_notification){
         m_notification->close();
+        m_notification->deleteLater();
+        m_notification=nullptr;
+    }
+
+    if (m_upgradeNotification){
+        m_upgradeNotification->close();
+        m_upgradeNotification->deleteLater();
+        m_upgradeNotification=nullptr;
     }
 
     if (referenceId<lastNotificationId){

@@ -29,7 +29,7 @@ public:
 signals:
 
     void startWidgetFinished(bool showWidget,bool startOk);
-    void unitStateChanged(int actionCode,QString lastExecutionTime);
+    void unitStateChanged(int actionCode,QString lastExecutionTime, QString waitTime, QString upgradeItem);
     void subscriptionFinished(bool success, QString error );
 
 private:    
@@ -37,8 +37,10 @@ private:
     QString lastUpdate;
     int actionCode=1;
     bool checkFailed=false;
+    bool updatedFailed=false;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
     QString pkgInstalledLog="/run/lliurex-auto-upgrade/installed_packages.log";
+    QStringList upgradeItems={"lliurex","security","ubuntu","kernel"};
     QDBusInterface *managerInterface;
 
     bool showWidget();
@@ -46,6 +48,8 @@ private:
     bool createInterface();
     void getLastInstalledPkg(QString instaledPkg);
     QString getLastExecutionTime();
+    QString getUpgradeItem(QString &message);
+    QString getWaitTimeForUpgrade(QString &message);
 
 private slots:
 
