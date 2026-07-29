@@ -281,7 +281,15 @@ QString LliurexAutoUpgradeWidgetUtils::getUpgradeItem(QString &message){
         return message.contains(upgradeItem,Qt::CaseInsensitive);   
     });
 
-    return (it != upgradeItems.end()) ? *it:QString();
+    if (it != upgradeItems.end()){
+        QString item = *it;
+        if (!item.isEmpty()){
+            return item.at(0).toUpper() + item.mid(1);
+        }
+        return item;
+    }
+
+    return QString();
 
 }
 

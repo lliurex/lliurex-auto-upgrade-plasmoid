@@ -96,8 +96,8 @@ private:
         PackagesDownloaded = 10,
         FullDownloaded = 11,
         DownloadLimit = 12,
-        UpdatingPackages = 13,
-        PackagesUpdated = 14,
+        UpdatingComponent = 13,
+        ComponentUpdated = 14,
         SystemUpdated = 15,
         UpdateLimit = 16,
         UpdatedError = 17
@@ -115,11 +115,11 @@ private:
     QString notificationBody;
     QString notificationHead;
     QString notificationFoot;
-    QString notificationUpgradeFoot;
+    QString updateLimitFoot;
     QString turnOffWarning;
     QString lastUpgradeDownloaded;
     QString lastUpgradeInstalled;
-    QString lastUpradeItem;
+    QString lastUpgradeItem;
     uint lastNotificationId;
     LliurexAutoUpgradeWidgetUtils *m_utils;
     QPointer<KNotification> m_notification;
