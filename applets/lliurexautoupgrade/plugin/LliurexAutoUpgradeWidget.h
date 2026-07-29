@@ -83,6 +83,26 @@ signals:
  
 private:
 
+    enum class UpgradeState {
+        ReadyToCheck = 1,
+        CheckingStatus = 2,
+        InstallingPackages = 3,
+        UpdatesInstalled = 4,
+        NoChanges = 5,
+        ProcessError = 6,
+        StartingAutoUpgrade = 7,
+        GatheringPackages = 8,
+        DownloadingPackages = 9,
+        PackagesDownloaded = 10,
+        FullDownloaded = 11,
+        DownloadLimit = 12,
+        UpdatingPackages = 13,
+        PackagesUpdated = 14,
+        SystemUpdated = 15,
+        UpdateLimit = 16,
+        UpdatedError = 17
+    };
+
     TrayStatus m_status = PassiveStatus;
     QString m_iconName = QStringLiteral("lliurex-auto-upgrade-warning");
     QString m_iconNamePh = QStringLiteral("lliurex-auto-upgrade-warning");

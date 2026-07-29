@@ -174,8 +174,10 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     actionCode=3;
                 }else if (newState.contains("Installing packages")){
                     actionCode=3;
-                    QString tmpPkg=newState.split(": ")[1];
-                    getLastInstalledPkg(tmpPkg);
+                    QStringList tokens=newState.split(": ");
+                    if (tokens.size() > 1 ){
+                        getLastInstalledPkg(tokens[1]);
+                    }
                 }else if (newState.contains("Installing finished")){
                     checkFailed=false;
                     actionCode=4;
