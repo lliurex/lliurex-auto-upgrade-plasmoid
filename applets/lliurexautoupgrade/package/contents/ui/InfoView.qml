@@ -20,7 +20,7 @@ Item {
             anchors.centerIn: parent
             width: parent.width*2 - (PlasmaCore.Units.gridUnit * 4)
             iconName: lliurexAutoUpgradeWidget.iconNamePh
-            text:lliurexAutoUpgradeWidget.subToolTip
+            text:lliurexAutoUpgradeWidget.messagePh
         }
 
         PC3.Button{

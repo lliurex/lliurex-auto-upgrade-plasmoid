@@ -23,6 +23,7 @@
 
 LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
     : QObject(parent)
+    , actionCode(UpgradeAction::ReadyToCheck)
        
 {
 
@@ -161,83 +162,75 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
                 if (newState.contains("First run")) {
                     if (!checkFailed){
-                        actionCode=1;
+                        actionCode=UpgradeAction::ReadyToCheck;
                     }else{
-                        actionCode=6;
-                        lastExecution=getLastExecutionTime();
+                        actionCode=UpgradeAction::ProcessError;
                     }
                 }else if (newState.contains("dpkg to finish")){
-                    actionCode=1;
+                    actionCode=UpgradeAction::ReadyToCheck;
                 }else if (newState.contains("remote file")){
-                    actionCode=2;
+                    actionCode=UpgradeAction::CheckingStatus;
                 }else if (newState.contains("before installing")){
-                    actionCode=3;
+                    actionCode=UpgradeAction::InstallingPackages;
                 }else if (newState.contains("Installing packages")){
-                    actionCode=3;
+                    actionCode=UpgradeAction::InstallingPackages;
                     QStringList tokens=newState.split(": ");
                     if (tokens.size() > 1 ){
                         getLastInstalledPkg(tokens[1]);
                     }
                 }else if (newState.contains("Installing finished")){
                     checkFailed=false;
-                    actionCode=4;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::PackagesInstalled;
                 }else if (newState.contains("Nothing to execute")){
                     checkFailed=false;
-                    actionCode=5;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::NoChanges;
                 }else if (newState.contains("Failed to")){
                     checkFailed=true;
-                    actionCode=6;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::ProcessError;
                 }else if (newState.contains("Starting unattended upgrades")){
                     if (!updatedFailed){
-                        actionCode=7;
+                        actionCode=UpgradeAction::StartingAutoUpgrade;
                         waitTime=getWaitTimeForUpgrade(newState);
                     }else{
-                        actionCode=17;
-                        lastExecution=getLastExecutionTime();
+                        actionCode=UpgradeAction::UpdatedError;
                     }
                 }else if (newState.contains("Gathering unattended upgrade")){
                     updatedFailed=false;
-                    actionCode=8;
+                    actionCode=UpgradeAction::GatheringPackages;
                 }else if (newState.contains("upgrade is downloading")){
                     updatedFailed=false;
-                    actionCode=9;
+                    actionCode=UpgradeAction::DownloadingComponent;
                     upgradeItem=getUpgradeItem(newState);
                 }else if (newState.contains("have been downloaded")){
                     updatedFailed=false;
-                    actionCode=10;
+                    actionCode=UpgradeAction::ComponentDownloaded;
                     upgradeItem=getUpgradeItem(newState);
                 }else if (newState.contains("downloaded every component")){
                     updatedFailed=false;
-                    actionCode=11;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::FullDownloaded;
                 }else if (newState.contains("upgrade download limit reached")){
                     updatedFailed=false;
-                    actionCode=12;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::DownloadLimit;
                 }else if (newState.contains("upgrade is installing")){
                     updatedFailed=false;
-                    actionCode=13;
+                    actionCode=UpgradeAction::UpdatingComponent;
                     upgradeItem=getUpgradeItem(newState);
                 }else if (newState.contains("have been installed")){
                     updatedFailed=false;
-                    actionCode=14;
+                    actionCode=UpgradeAction::ComponentUpdated;
                     upgradeItem=getUpgradeItem(newState);
                 }else if (newState.contains("installed every component.")){
                     updatedFailed=false;
-                    actionCode=15;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::SystemUpdated;
                 }else if (newState.contains("upgrade install limit reached")){
                     updatedFailed=false;
-                    actionCode=16;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::UpdateLimit;
                 }else if (newState.contains("upgrade failed")){
                     updatedFailed=true;
-                    actionCode=17;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::UpdatedError;
                 }
+
+                lastExecution=getLastExecutionTime();
 
                 emit unitStateChanged(actionCode,lastExecution,waitTime,upgradeItem);
             }

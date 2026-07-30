@@ -8,7 +8,6 @@
 
 #include "LliurexAutoUpgradeWidgetUtils.h"
 
-
 class QTimer;
 class KNotification;
 class AsyncDbus;
@@ -24,6 +23,7 @@ class LliurexAutoUpgradeWidget : public QObject
     Q_PROPERTY(QString subToolTip READ subToolTip NOTIFY subToolTipChanged)
     Q_PROPERTY(QString iconName READ iconName NOTIFY iconNameChanged)
     Q_PROPERTY(QString iconNamePh READ iconNamePh NOTIFY iconNamePhChanged)
+    Q_PROPERTY(QString messagePh READ messagePh NOTIFY messagePhChanged)
     Q_PROPERTY(bool showDetailsBtn READ showDetailsBtn NOTIFY showDetailsBtnChanged)
     Q_PROPERTY(int currentStackIndex READ currentStackIndex NOTIFY currentStackIndexChanged)
     Q_PROPERTY(QStringList lastInstalledPkg READ lastInstalledPkg NOTIFY lastInstalledPkgChanged)
@@ -57,6 +57,9 @@ public:
     QString iconNamePh() const;
     void setIconNamePh(const QString &name);
 
+    QString messagePh() const;
+    void setMessagePh(const QString &message);
+
     bool showDetailsBtn();
     void setShowDetailsBtn(bool);
 
@@ -76,6 +79,7 @@ signals:
     void subToolTipChanged();
     void iconNameChanged();
     void iconNamePhChanged();
+    void messagePhChanged();
     void statusChanged();
     void showDetailsBtnChanged();
     void currentStackIndexChanged();
@@ -83,11 +87,12 @@ signals:
  
 private:
 
+    /*
     enum class UpgradeState {
         ReadyToCheck = 1,
         CheckingStatus = 2,
         InstallingPackages = 3,
-        UpdatesInstalled = 4,
+        PackagesInstalled = 4,
         NoChanges = 5,
         ProcessError = 6,
         StartingAutoUpgrade = 7,
@@ -102,10 +107,12 @@ private:
         UpdateLimit = 16,
         UpdatedError = 17
     };
+    */
 
     TrayStatus m_status = PassiveStatus;
     QString m_iconName = QStringLiteral("lliurex-auto-upgrade-warning");
     QString m_iconNamePh = QStringLiteral("lliurex-auto-upgrade-warning");
+    QString m_messagePh;
     QString m_toolTip;
     QString m_subToolTip;
     bool m_showDetailsBtn=false;
@@ -115,12 +122,13 @@ private:
     QString notificationBody;
     QString notificationHead;
     QString notificationFoot;
+    QString updateFoot;
     QString updateLimitFoot;
     QString turnOffWarning;
     QString lastUpgradeDownloaded;
     QString lastUpgradeInstalled;
     QString lastUpgradeItem;
-    uint lastNotificationId;
+    /*uint lastNotificationId;*/
     LliurexAutoUpgradeWidgetUtils *m_utils;
     QPointer<KNotification> m_notification;
     QPointer<KNotification> m_upgradeNotification;
@@ -132,7 +140,7 @@ private:
 private slots:
     
     void handleStartFinished(bool showWidget,bool startOk);
-    void manageState(int actionCode,QString lastExecutionTime,QString waitTime,QString upgradeItem);
+    void manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString lastExecutionTime,QString waitTime,QString upgradeItem);
     void enableWidget(bool success,QString error);
 
 };

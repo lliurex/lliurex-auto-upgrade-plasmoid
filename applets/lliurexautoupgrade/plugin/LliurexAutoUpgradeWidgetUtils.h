@@ -15,6 +15,26 @@ class LliurexAutoUpgradeWidgetUtils : public QObject
 
 
 public:
+
+    enum class UpgradeAction {
+        ReadyToCheck = 1,
+        CheckingStatus = 2,
+        InstallingPackages = 3,
+        PackagesInstalled = 4,
+        NoChanges = 5,
+        ProcessError = 6,
+        StartingAutoUpgrade = 7,
+        GatheringPackages = 8,
+        DownloadingComponent = 9,
+        ComponentDownloaded = 10,
+        FullDownloaded = 11,
+        DownloadLimit = 12,
+        UpdatingComponent = 13,
+        ComponentUpdated = 14,
+        SystemUpdated = 15,
+        UpdateLimit = 16,
+        UpdatedError = 17
+    };    
    
 
    LliurexAutoUpgradeWidgetUtils(QObject *parent = nullptr);
@@ -29,13 +49,13 @@ public:
 signals:
 
     void startWidgetFinished(bool showWidget,bool startOk);
-    void unitStateChanged(int actionCode,QString lastExecutionTime, QString waitTime, QString upgradeItem);
+    void unitStateChanged(UpgradeAction actionCode,QString lastExecutionTime, QString waitTime, QString upgradeItem);
     void subscriptionFinished(bool success, QString error );
 
-private:    
-     
+private:
+
     QString lastUpdate;
-    int actionCode=1;
+    UpgradeAction actionCode;
     bool checkFailed=false;
     bool updatedFailed=false;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
@@ -57,4 +77,6 @@ private slots:
 
      
 };
+
+Q_DECLARE_METATYPE(LliurexAutoUpgradeWidgetUtils::UpgradeAction)
 #endif // PLASMA_LLIUREX_AUTO_UPGRADE_WIDGET_UTILS_H

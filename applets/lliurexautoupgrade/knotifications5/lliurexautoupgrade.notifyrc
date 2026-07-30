@@ -5,28 +5,27 @@ Comment[ca@valencia]=LliureX-Auto-Upgrade
 Comment[ca]=LliureX-Auto-Upgrade
 Comment[es]=LliureX-Auto-Upgrade
 
-[Event/RemoteAction]
-Name=LliureX-Auto-Upgrade running
-Name[ca@valencia]=LliureX-Auto-Upgrade en funcionament
-Name[ca]=LliureX-Auto-Upgrade en funcionament
-Name[es]=LliureX-Auto-Upgrade en funcionamiento
+[Event/InstallAction]
+Name=LliureX-Auto-Upgrade is installing packages
+Name[ca@valencia]=LliureX-Auto-Upgrade esta instal·lant paquets
+Name[ca]=LliureX-Auto-Upgrade esta instal·lant paquets
+Name[es]=LliureX-Auto-Upgrade esta instalando paquetes
 
-Comment=Occurs when LliureX-Auto-Upgrade is performing actions on the system
-Comment[ca@valencia]=Ocorre quan LliureX-Auto-Upgrade esta realitzant accions sobre el sistema
-Comment[ca]=Ocorre quan LliureX-Auto-Upgrade esta realitzant accions sobre el sistema
-Comment[es]=Ocurre cuando LliureX-Auto-Upgrade esta realizando acciones sobre el sistema
+Comment=Occurs when LliureX-Auto-Upgrade install packages on the system
+Comment[ca@valencia]=Ocorre quan LliureX-Auto-Upgrade realitza la instal·lació de paquets en el sistema
+Comment[ca]=Ocorre quan LliureX-Auto-Upgrade realitza la instal·lació de paquets en el sistema
+Comment[es]=Ocurre cuando LliureX-Auto-Upgrade realiza la instalación de paquetes en el sistema
 Action=Popup
 Urgency=Normal
 
 [Event/UpdateAction]
-Name=LliureX-Auto-Upgrade running
-Name[ca@valencia]=LliureX-Auto-Upgrade en funcionament
-Name[ca]=LliureX-Auto-Upgrade en funcionament
-Name[es]=LliureX-Auto-Upgrade en funcionamiento
+Name=LliureX-Auto-Upgrade is updating the system
+Name[ca@valencia]=LliureX-Auto-Upgrade esta actualizant el sistema
+Name[ca]=LliureX-Auto-Upgrade esta actualizant el sistema
+Name[es]=LliureX-Auto-Upgrade esta actualizando el sistema
 
-Comment=Occurs when LliureX-Auto-Upgrade is performing actions on the system
-Comment[ca@valencia]=Ocorre quan LliureX-Auto-Upgrade esta realitzant accions sobre el sistema
-Comment[ca]=Ocorre quan LliureX-Auto-Upgrade esta realitzant accions sobre el sistema
-Comment[es]=Ocurre cuando LliureX-Auto-Upgrade esta realizando acciones sobre el sistema
-Action=Popup
+Comment=Occurs when LliureX-Auto-Upgrade updates the system
+Comment[ca@valencia]=Ocorre quan LliureX-Auto-Upgrade actualitza el sistema
+Comment[ca]=Ocorre quan LliureX-Auto-Upgrade actualitza el sistema
+Comment[es]=Ocurre cuando LliureX-Auto-Upgrade actualiza el sistema
 Urgency=Normal

@@ -24,6 +24,7 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     notificationBody=i18n("Ready to check status");
     notificationHead=i18n("Last execution:");
     notificationFoot=i18n("Wait for next check");
+    updateFoot=i18n("The update process will continue in the next restart");
     updateLimitFoot=i18n("Will continue in the next restart");
     turnOffWarning=i18n("Do not turn off or restart the computer");
     lastUpgradeDownloaded=i18n("Last component downloaded:");
@@ -44,6 +45,7 @@ void LliurexAutoUpgradeWidget::handleStartFinished(bool showWidget,bool startOk)
     if (showWidget){
         if (startOk){
             setSubToolTip(notificationBody);
+            setMessagePh(notificationBody);
             changeTryIconState(1);
             m_utils->createSubscription();
         }else{
@@ -66,9 +68,9 @@ void LliurexAutoUpgradeWidget::enableWidget(bool success,QString error){
     }
 }
 
-void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionTime,QString waitTime,QString upgradeItem){
+void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString lastExecutionTime,QString waitTime,QString upgradeItem){
 
-    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<actionCode;
+    qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<static_cast<int>(actionCode);
     closeAllNotifications();
     setCurrentStackIndex(0);
     setShowDetailsBtn(false);
@@ -79,94 +81,101 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
     bool useFootText = false;
     bool useUpdateFootText = false;
 
-    UpgradeState state = static_cast<UpgradeState>(actionCode);
+    qDebug()<<"ITEM: "<<upgradeItem;
 
-    switch (state) {
-        case UpgradeState::ReadyToCheck:
+    switch (actionCode) {
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ReadyToCheck:
             notificationBody = i18n("Ready to check status");
             icon = "lliurex-auto-upgrade-warning";
             break;
 
-        case UpgradeState::CheckingStatus:
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::CheckingStatus:
             notificationBody = i18n("Checking status");
             break;
 
-        case UpgradeState::InstallingPackages:
-            notificationBody = i18n("Installing packages. Do not turn off or restart the computer");
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::InstallingPackages:
+            notificationBody = i18n("Installing packages.");
             appendWarning = true;
             break;
 
-        case UpgradeState::UpdatesInstalled:
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::PackagesInstalled:
             notificationBody = i18n("Updates installed");
             icon = "lliurex-auto-upgrade-ok";
             useFootText = true;
             useHeadText = true;
             break;
 
-        case UpgradeState::NoChanges:
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::NoChanges:
             notificationBody = i18n("No changes");
             icon = "lliurex-auto-upgrade-ok";
             useFootText = true;
             useHeadText = true;
             break;
 
-        case UpgradeState::ProcessError:
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ProcessError:
             notificationBody = i18n("Error, process not completed");
             icon = "lliurex-auto-upgrade-error";
             useFootText = true;
             useHeadText = true;
             break;
 
-        case UpgradeState::StartingAutoUpgrade:
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::StartingAutoUpgrade:
             notificationBody=i18n("Ready to start unattended upgrade in %1 seconds",waitTime);
             icon = "lliurex-auto-upgrade-warning";
             break;
 
-        case UpgradeState::GatheringPackages:
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::GatheringPackages:
             notificationBody=i18n("Gathering the package list for the update");
             break;
 
-        case UpgradeState::DownloadingPackages:
-            notificationBody=i18n("Downloading packages to update %1 component",upgradeItem);
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::DownloadingComponent:
+            notificationBody=i18n("Downloading updates for %1 ",upgradeItem);
             break;
 
-        case UpgradeState::PackagesDownloaded:
-            notificationBody=i18n("Packages downloaded to update %1 component",upgradeItem);
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentDownloaded:
+            notificationBody=lastUpgradeDownloaded % " " %lastUpgradeItem % "\n" % updateFoot;
+            icon = "lliurex-auto-upgrade-ok";
+            useHeadText=true;
             lastUpgradeItem=upgradeItem;
             break;
       
-        case UpgradeState::FullDownloaded:
-            notificationBody=i18n("All update packages downloaded");
-            icon = "lliurex-auto-upgrade-ok";
-            useHeadText=true;
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::FullDownloaded: {
+            QString message=i18n("All updates downloaded");
+            if (!lastUpgradeItem.isEmpty()){
+                notificationBody= message % "\n" % updateFoot;
+                icon = "lliurex-auto-upgrade-ok";
+                useHeadText=true;
+            }else{
+                notificationBody=message;
+            }
             lastUpgradeItem="";
             break;
-
-        case UpgradeState::DownloadLimit:
+        }
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::DownloadLimit:
             if (!lastUpgradeItem.isEmpty()){
-                notificationBody=lastUpgradeDownloaded % " " %lastUpgradeItem % "\n" % i18n("The download for the update has reached its limit.");
+                notificationBody=lastUpgradeDownloaded % " " %lastUpgradeItem % "\n" % i18n("The download of updates has reached its limit.");
                 icon = "lliurex-auto-upgrade-ok";
                 useHeadText=true;
                 useUpdateFootText=true;
             }else{
-                notificationBody=i18n("The download for the update has reached its limit.");
+                notificationBody=i18n("The download of updates has reached its limit.");
             }
             break;
 
-        case UpgradeState::UpdatingComponent:
-            notificationBody=i18n("Updating %1 component",upgradeItem);
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdatingComponent:
+            notificationBody=i18n("Updating %1 ",upgradeItem);
             appendWarning = true;
             break;
 
-        case UpgradeState::ComponentUpdated:
-            notificationBody=i18n("%1 component has been updated",upgradeItem);
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentUpdated:
+            notificationBody=i18n("%1 has been updated",upgradeItem);
             icon = "lliurex-auto-upgrade-ok";
             lastUpgradeItem=upgradeItem;
             useHeadText=true;
             useUpdateFootText=true;
             break;
 
-        case UpgradeState::SystemUpdated:
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::SystemUpdated:
             notificationBody=i18n("The system has been updated");
             icon = "lliurex-auto-upgrade-ok";
             useHeadText=true;
@@ -174,7 +183,7 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
             lastUpgradeItem="";
             break;
 
-        case UpgradeState::UpdateLimit:
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdateLimit:
             if (!lastUpgradeItem.isEmpty()){
                 notificationBody=lastUpgradeInstalled % " " % lastUpgradeItem % "\n" % i18n("The update process has reached its limit.");
                 icon = "lliurex-auto-upgrade-ok";
@@ -185,21 +194,27 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
             }
             break;
 
-        case UpgradeState::UpdatedError:
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdatedError:
             notificationBody=i18n("Error, the update has failed. Canceling process");
             icon = "lliurex-auto-upgrade-error";
             useHeadText=true;
             break;
 
         default:
-            qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unknown action code received:" << actionCode;
+            qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unknown action code received:" << static_cast<int>(actionCode);
             return;
     }
 
-    if (state == UpgradeState::InstallingPackages) {
-        sendNotification();
+    if (actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::InstallingPackages) {
+        QString message = notificationBody % ". " % turnOffWarning;
+        m_upgradeNotification = new KNotification(QStringLiteral("InstallAction"), KNotification::Persistent, this);
+        m_upgradeNotification->setComponentName(QStringLiteral("lliurexautoupgrade"));
+        m_upgradeNotification->setTitle(message);
+        m_upgradeNotification->setText("");
+        m_upgradeNotification->setIconName(icon);
+        m_upgradeNotification->sendEvent();
     }
-    else if (state == UpgradeState::UpdatingComponent) {
+    else if (actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdatingComponent) {
         QString message = notificationBody % ". " % turnOffWarning;
         m_upgradeNotification = new KNotification(QStringLiteral("UpdateAction"), KNotification::Persistent, this);
         m_upgradeNotification->setComponentName(QStringLiteral("lliurexautoupgrade"));
@@ -208,11 +223,11 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
         m_upgradeNotification->setIconName(icon);
         m_upgradeNotification->sendEvent();
     }
-    else if (state == UpgradeState::UpdatesInstalled ||
-             state == UpgradeState::SystemUpdated ||
-             state == UpgradeState::UpdateLimit) {
+    else if (actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::PackagesInstalled ||
+             actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::SystemUpdated ||
+             actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentUpdated) {
 
-        m_notification = new KNotification(QStringLiteral("RemoteAction"), KNotification::CloseOnTimeout, this);
+        m_notification = new KNotification(QStringLiteral("InstallAction"), KNotification::CloseOnTimeout, this);
         m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
         m_notification->setTitle(notificationBody);
         m_notification->setText("");
@@ -228,19 +243,23 @@ void LliurexAutoUpgradeWidget::manageState(int actionCode,QString lastExecutionT
 
     setIconName(icon);
     setIconNamePh(icon);
-    
-    notificationBody=notificationBody.replace("\n","\n\n");
 
+    QString messagePh=notificationBody;
+    messagePh.replace("\n","\n\n");
+    
     if (useHeadText) {
         QString headText = notificationHead % " "  % lastExecutionTime;
         setSubToolTip(headText % "\n" % notificationBody);
+        setMessagePh(headText % "\n" % messagePh);
     } else if (appendWarning) {
         setSubToolTip(notificationBody % ". " % turnOffWarning);
+        setMessagePh(messagePh % ". " % turnOffWarning);
     } else {
         setSubToolTip(notificationBody);
+        setMessagePh(messagePh);
     }
 
-    if (state == UpgradeState::UpdatesInstalled || state == UpgradeState::NoChanges) {
+    if (actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::PackagesInstalled || actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::NoChanges) {
         QStringList installedPkg = m_utils->lastInstalledPkg;
         setLastInstalledPkg(installedPkg);
         setShowDetailsBtn(!installedPkg.isEmpty());
@@ -257,10 +276,12 @@ void LliurexAutoUpgradeWidget::disableApplet(){
     setIconName("lliurex-auto-upgrade-error");
     setIconNamePh("lliurex-auto-upgrade-error");
     setSubToolTip(notificationBody);
+    setMessagePh(notificationBody);
     changeTryIconState(0);
 
 }
 
+/* Alternative if permanent notification dont close
 void LliurexAutoUpgradeWidget::sendNotification(){
     
    if (QDBusConnection::sessionBus().isConnected()) {
@@ -284,10 +305,10 @@ void LliurexAutoUpgradeWidget::sendNotification(){
         }
     }
 }
-
+*/
 void LliurexAutoUpgradeWidget::closeAllNotifications(){
 
-    uint referenceId=0;
+    /*uint referenceId=0;*/
 
     if (m_notification){
         m_notification->close();
@@ -301,6 +322,7 @@ void LliurexAutoUpgradeWidget::closeAllNotifications(){
         m_upgradeNotification=nullptr;
     }
 
+    /* Alternative if permanent notification dont close
     if (referenceId<lastNotificationId){
         if (QDBusConnection::sessionBus().isConnected()) {
             QDBusMessage msg=QDBusMessage::createMethodCall("org.freedesktop.Notifications",
@@ -312,6 +334,7 @@ void LliurexAutoUpgradeWidget::closeAllNotifications(){
             QDBusConnection::sessionBus().send(msg);
         }
     }
+    */
 }
 
 LliurexAutoUpgradeWidget::TrayStatus LliurexAutoUpgradeWidget::status() const
@@ -329,7 +352,9 @@ void LliurexAutoUpgradeWidget::changeTryIconState(int state){
     }else if (state==2){
         setIconName("lliurex-auto-upgrade");
         setIconNamePh("lliurex-auto-upgrade");
-        setSubToolTip(i18n("LliureX-Auto-Upgrade is not enabled in this computer"));
+        QString message=i18n("LliureX-Auto-Upgrade is not enabled in this computer");
+        setSubToolTip(message);
+        setMessagePh(message);
         setStatus(HiddenStatus);
     }
 
@@ -372,6 +397,19 @@ void LliurexAutoUpgradeWidget::setIconNamePh(const QString &name)
     if (m_iconNamePh != name) {
         m_iconNamePh = name;
         emit iconNamePhChanged();
+    }
+}
+
+QString LliurexAutoUpgradeWidget::messagePh() const
+{
+    return m_messagePh;
+}
+
+void LliurexAutoUpgradeWidget::setMessagePh(const QString &message)
+{
+    if (m_messagePh != message) {
+        m_messagePh = message;
+        emit messagePhChanged();
     }
 }
 
