@@ -98,7 +98,7 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::InstallingPackages:
-            notificationBody = i18n("Installing packages.");
+            notificationBody = i18n("Installing packages");
             appendWarning = true;
             sendNotification = true;
             eventId=QStringLiteral("InstallAction");
@@ -138,7 +138,7 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::DownloadingComponent:
-            notificationBody=i18n("Downloading updates for %1 ",upgradeItem);
+            notificationBody=i18n("Downloading updates for %1",upgradeItem);
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentDownloaded:
@@ -169,7 +169,7 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdatingComponent:
-            notificationBody=i18n("Installing updates for %1 ",upgradeItem);
+            notificationBody=i18n("Installing updates for %1",upgradeItem);
             appendWarning = true;
             sendNotification=true;
             eventId=QStringLiteral("UpdateAction");
