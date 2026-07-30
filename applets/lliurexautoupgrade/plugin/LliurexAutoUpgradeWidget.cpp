@@ -68,7 +68,7 @@ void LliurexAutoUpgradeWidget::enableWidget(bool success,QString error){
     }
 }
 
-void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString& lastExecutionTime,QString& waitTime,QString& upgradeItem){
+void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString& lastExecutionTime,QString& waitTime,QString& upgradeItem,QString& lliurexVersion){
 
     qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<static_cast<int>(actionCode);
     closeAllNotifications();
@@ -183,16 +183,20 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             useHeadText=true;
             useUpdateFootText=true;
             sendNotification=true;
+            showUpdatedNotification=true;
             eventId=QStringLiteral("InstallAction");
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::SystemUpdated:
-            notificationBody=i18n("The system has been updated");
+            notificationBody=i18n("The system is up to date:") % " " % lliurexVersion;
             icon = "lliurex-auto-upgrade-ok";
             useHeadText=true;
             useFootText=true;
             lastUpgradeItem="";
-            sendNotification=true;
+            if (showUpdatedNotification){
+                sendNotification=true;
+                showUpdatedNotification=false;
+            }
             eventId=QStringLiteral("InstallAction");
             break;
 

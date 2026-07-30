@@ -50,19 +50,20 @@ public:
 signals:
 
     void startWidgetFinished(bool showWidget,bool startOk);
-    void unitStateChanged(UpgradeAction actionCode,QString& lastExecutionTime, QString& waitTime, QString& upgradeItem);
+    void unitStateChanged(UpgradeAction actionCode,QString& lastExecutionTime, QString& waitTime, QString& upgradeItem, QString& lliurexVersion);
     void subscriptionFinished(bool success, QString error );
 
 private:
 
-    QString lastUpdate;
     UpgradeAction actionCode;
+    QDBusInterface *managerInterface;
+
     bool checkFailed=false;
     bool updatedFailed=false;
+    QString lastUpdate;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
     QString pkgInstalledLog="/run/lliurex-auto-upgrade/installed_packages.log";
     QStringList upgradeItems={"lliurex","security","ubuntu","kernel"};
-    QDBusInterface *managerInterface;
 
     bool showWidget();
     void getPkgsInstalledInSession();
@@ -71,12 +72,12 @@ private:
     QString getLastExecutionTime();
     QString getUpgradeItem(QString &message);
     QString getWaitTimeForUpgrade(QString &message);
+    QString getLliurexVersion();
 
 private slots:
 
     void onPropertiesChanged(const QString &interfaceName, const QVariantMap &changedProperties, const QStringList &invalidatedProperties);
-
-     
+ 
 };
 
 Q_DECLARE_METATYPE(LliurexAutoUpgradeWidgetUtils::UpgradeAction)

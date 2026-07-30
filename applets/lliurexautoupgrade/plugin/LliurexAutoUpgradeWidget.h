@@ -88,13 +88,16 @@ signals:
 private:
 
     TrayStatus m_status = PassiveStatus;
+
+    int m_currentStackIndex=0;
+    bool m_showDetailsBtn=false;
+    bool showUpdatedNotification=false;
+
     QString m_iconName = QStringLiteral("lliurex-auto-upgrade-warning");
     QString m_iconNamePh = QStringLiteral("lliurex-auto-upgrade-warning");
     QString m_messagePh;
     QString m_toolTip;
     QString m_subToolTip;
-    bool m_showDetailsBtn=false;
-    int m_currentStackIndex=0;
     QStringList m_lastInstalledPkg;
     QString notificationTitle;
     QString notificationBody;
@@ -107,8 +110,10 @@ private:
     QString lastUpgradeInstalled;
     QString lastUpgradeItem;
     /*uint lastNotificationId;*/
+
     LliurexAutoUpgradeWidgetUtils *m_utils;
     QPointer<KNotification> m_notification;
+    
     void plasmoidMode();
     void disableApplet();
     void closeAllNotifications();
@@ -117,7 +122,7 @@ private:
 private slots:
     
     void handleStartFinished(bool showWidget,bool startOk);
-    void manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString& lastExecutionTime,QString& waitTime,QString& upgradeItem);
+    void manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString& lastExecutionTime,QString& waitTime,QString& upgradeItem,QString& lliurexVersion);
     void enableWidget(bool success,QString error);
 
 };

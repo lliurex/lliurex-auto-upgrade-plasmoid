@@ -15,6 +15,7 @@
 #include <QPointer>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QProcess>
 
 #include <tuple>
 #include <sys/types.h>
@@ -159,6 +160,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 QString lastExecution="";
                 QString upgradeItem="";
                 QString waitTime="";
+                QString lliurexVersion="";
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
                 if (newState.contains("First run")) {
                     if (!checkFailed){
@@ -225,6 +227,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 }else if (newState.contains("installed every component.")){
                     updatedFailed=false;
                     actionCode=UpgradeAction::SystemUpdated;
+                    lliurexVersion=getLliurexVersion();
                 }else if (newState.contains("upgrade install limit reached")){
                     updatedFailed=false;
                     actionCode=UpgradeAction::UpdateLimit;
@@ -235,7 +238,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
 
                 lastExecution=getLastExecutionTime();
 
-                emit unitStateChanged(actionCode,lastExecution,waitTime,upgradeItem);
+                emit unitStateChanged(actionCode,lastExecution,waitTime,upgradeItem,lliurexVersion);
             }
         }
       
@@ -326,5 +329,21 @@ void LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
             pkgsLog.close();
         }
     }
-
 }
+
+QString LliurexAutoUpgradeWidgetUtils::getLliurexVersion(){
+
+    QProcess process;
+    process.start("lliurex-version");
+    if (process.waitForFinished(3000)){
+        QString output=QString::fromUtf8(process.readAllStandardOutput()).trimmed();
+        QStringList parts=output.split(",");
+        if (!parts.isEmpty()){
+            return parts.last().trimmed();
+        }
+    }
+
+    return QString();
+}
+
+
