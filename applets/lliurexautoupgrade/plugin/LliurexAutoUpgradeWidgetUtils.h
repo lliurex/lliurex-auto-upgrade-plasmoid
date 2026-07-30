@@ -50,7 +50,7 @@ public:
 signals:
 
     void startWidgetFinished(bool showWidget,bool startOk);
-    void unitStateChanged(UpgradeAction actionCode,QString lastExecutionTime, QString waitTime, QString upgradeItem);
+    void unitStateChanged(UpgradeAction actionCode,QString& lastExecutionTime, QString& waitTime, QString& upgradeItem);
     void subscriptionFinished(bool success, QString error );
 
 private:

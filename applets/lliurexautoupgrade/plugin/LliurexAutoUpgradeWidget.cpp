@@ -68,7 +68,7 @@ void LliurexAutoUpgradeWidget::enableWidget(bool success,QString error){
     }
 }
 
-void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString lastExecutionTime,QString waitTime,QString upgradeItem){
+void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString& lastExecutionTime,QString& waitTime,QString& upgradeItem){
 
     qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Receiveing state: "<<static_cast<int>(actionCode);
     closeAllNotifications();
@@ -80,6 +80,10 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
     bool appendWarning = false;
     bool useFootText = false;
     bool useUpdateFootText = false;
+
+    bool sendNotification = false;
+    QString eventId;
+    KNotification::NotificationFlags flags=KNotification::CloseOnTimeout;
 
     qDebug()<<"ITEM: "<<upgradeItem;
 
@@ -96,6 +100,9 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::InstallingPackages:
             notificationBody = i18n("Installing packages.");
             appendWarning = true;
+            sendNotification = true;
+            eventId=QStringLiteral("InstallAction");
+            flags = KNotification::Persistent;
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::PackagesInstalled:
@@ -103,6 +110,8 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             icon = "lliurex-auto-upgrade-ok";
             useFootText = true;
             useHeadText = true;
+            sendNotification=true;
+            eventId=QStringLiteral("InstallAction");
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::NoChanges:
@@ -133,7 +142,7 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentDownloaded:
-            notificationBody=i18n("Updates for %1 have benn downloaded");
+            notificationBody=i18n("Updates for %1 have been downloaded",upgradeItem);
             lastUpgradeItem=upgradeItem;
             break;
 
@@ -162,6 +171,9 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdatingComponent:
             notificationBody=i18n("Installing updates for %1 ",upgradeItem);
             appendWarning = true;
+            sendNotification=true;
+            eventId=QStringLiteral("UpdateAction");
+            flags = KNotification::Persistent;
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentUpdated:
@@ -170,6 +182,8 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             lastUpgradeItem=upgradeItem;
             useHeadText=true;
             useUpdateFootText=true;
+            sendNotification=true;
+            eventId=QStringLiteral("InstallAction");
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::SystemUpdated:
@@ -178,6 +192,8 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             useHeadText=true;
             useFootText=true;
             lastUpgradeItem="";
+            sendNotification=true;
+            eventId=QStringLiteral("InstallAction");
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdateLimit:
@@ -202,36 +218,19 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             return;
     }
 
-    if (actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::InstallingPackages) {
-        QString message = notificationBody % ". " % turnOffWarning;
-        m_upgradeNotification = new KNotification(QStringLiteral("InstallAction"), KNotification::Persistent, this);
-        m_upgradeNotification->setComponentName(QStringLiteral("lliurexautoupgrade"));
-        m_upgradeNotification->setTitle(message);
-        m_upgradeNotification->setText("");
-        m_upgradeNotification->setIconName(icon);
-        m_upgradeNotification->sendEvent();
-    }
-    else if (actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdatingComponent) {
-        QString message = notificationBody % ". " % turnOffWarning;
-        m_upgradeNotification = new KNotification(QStringLiteral("UpdateAction"), KNotification::Persistent, this);
-        m_upgradeNotification->setComponentName(QStringLiteral("lliurexautoupgrade"));
-        m_upgradeNotification->setTitle(message);
-        m_upgradeNotification->setText("");
-        m_upgradeNotification->setIconName(icon);
-        m_upgradeNotification->sendEvent();
-    }
-    else if (actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::PackagesInstalled ||
-             actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::SystemUpdated ||
-             actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentUpdated) {
-
-        m_notification = new KNotification(QStringLiteral("InstallAction"), KNotification::CloseOnTimeout, this);
+    if (sendNotification){
+        QString titleText= notificationBody;
+        if (appendWarning){
+            titleText=titleText % ". " % turnOffWarning;
+        }
+        m_notification = new KNotification(eventId, flags, this);
         m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
-        m_notification->setTitle(notificationBody);
+        m_notification->setTitle(titleText);
         m_notification->setText("");
         m_notification->setIconName(icon);
         m_notification->sendEvent();
     }
-
+   
     if (useFootText){
         notificationBody=notificationBody % "\n" % notificationFoot;
     }else if (useUpdateFootText){
@@ -312,13 +311,7 @@ void LliurexAutoUpgradeWidget::closeAllNotifications(){
         m_notification->deleteLater();
         m_notification=nullptr;
     }
-
-    if (m_upgradeNotification){
-        m_upgradeNotification->close();
-        m_upgradeNotification->deleteLater();
-        m_upgradeNotification=nullptr;
-    }
-
+    
     /* Alternative if permanent notification dont close
     if (referenceId<lastNotificationId){
         if (QDBusConnection::sessionBus().isConnected()) {
