@@ -205,6 +205,9 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     updatedFailed=false;
                     actionCode=UpgradeAction::ComponentDownloaded;
                     upgradeItem=getUpgradeItem(newState);
+                }else if (newState.contains("Waiting until next reboot to install")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::FullDownloadedWait;
                 }else if (newState.contains("downloaded every component")){
                     updatedFailed=false;
                     actionCode=UpgradeAction::FullDownloaded;

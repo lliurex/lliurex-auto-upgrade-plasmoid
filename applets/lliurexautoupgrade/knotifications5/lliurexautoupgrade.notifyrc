@@ -28,4 +28,5 @@ Comment=Occurs when LliureX-Auto-Upgrade updates the system
 Comment[ca@valencia]=Ocorre quan LliureX-Auto-Upgrade actualitza el sistema
 Comment[ca]=Ocorre quan LliureX-Auto-Upgrade actualitza el sistema
 Comment[es]=Ocurre cuando LliureX-Auto-Upgrade actualiza el sistema
+Action=Popup
 Urgency=Normal

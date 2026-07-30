@@ -27,13 +27,14 @@ public:
         GatheringPackages = 8,
         DownloadingComponent = 9,
         ComponentDownloaded = 10,
-        FullDownloaded = 11,
-        DownloadLimit = 12,
-        UpdatingComponent = 13,
-        ComponentUpdated = 14,
-        SystemUpdated = 15,
-        UpdateLimit = 16,
-        UpdatedError = 17
+        FullDownloadedWait=11,
+        FullDownloaded = 12,
+        DownloadLimit = 13,
+        UpdatingComponent = 14,
+        ComponentUpdated = 15,
+        SystemUpdated = 16,
+        UpdateLimit = 17,
+        UpdatedError = 18
     };    
    
 

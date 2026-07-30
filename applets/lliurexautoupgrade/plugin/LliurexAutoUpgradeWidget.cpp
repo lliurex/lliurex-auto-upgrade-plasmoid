@@ -23,7 +23,7 @@ LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     notificationTitle=i18n("LliureX-Auto-Upgrade");
     notificationBody=i18n("Ready to check status");
     notificationHead=i18n("Last execution:");
-    notificationFoot=i18n("Wait for next check");
+    notificationFoot=i18n("Waiting for the next check");
     updateFoot=i18n("The update process will continue in the next restart");
     updateLimitFoot=i18n("Will continue in the next restart");
     turnOffWarning=i18n("Do not turn off or restart the computer");
@@ -133,24 +133,21 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentDownloaded:
-            notificationBody=lastUpgradeDownloaded % " " %lastUpgradeItem % "\n" % updateFoot;
-            icon = "lliurex-auto-upgrade-ok";
-            useHeadText=true;
+            notificationBody=i18n("Updates for %1 have benn downloaded");
             lastUpgradeItem=upgradeItem;
             break;
-      
-        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::FullDownloaded: {
-            QString message=i18n("All updates downloaded");
-            if (!lastUpgradeItem.isEmpty()){
-                notificationBody= message % "\n" % updateFoot;
-                icon = "lliurex-auto-upgrade-ok";
-                useHeadText=true;
-            }else{
-                notificationBody=message;
-            }
+
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::FullDownloadedWait:
+            notificationBody=i18n("All updates downloaded") % "\n" % updateFoot;
+            icon="lliurex-auto-upgrade-ok";
+            useHeadText=true;
+            break;
+
+        case LliurexAutoUpgradeWidgetUtils::UpgradeAction::FullDownloaded:
+            notificationBody=i18n("All updates downloaded");
             lastUpgradeItem="";
             break;
-        }
+
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::DownloadLimit:
             if (!lastUpgradeItem.isEmpty()){
                 notificationBody=lastUpgradeDownloaded % " " %lastUpgradeItem % "\n" % i18n("The download of updates has reached its limit.");
@@ -163,12 +160,12 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdatingComponent:
-            notificationBody=i18n("Updating %1 ",upgradeItem);
+            notificationBody=i18n("Installing updates for %1 ",upgradeItem);
             appendWarning = true;
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentUpdated:
-            notificationBody=i18n("%1 has been updated",upgradeItem);
+            notificationBody=i18n("Updates for %1 have been installed",upgradeItem);
             icon = "lliurex-auto-upgrade-ok";
             lastUpgradeItem=upgradeItem;
             useHeadText=true;
