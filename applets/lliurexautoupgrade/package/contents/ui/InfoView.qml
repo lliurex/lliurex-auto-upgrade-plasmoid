@@ -21,7 +21,7 @@ Item {
             anchors.centerIn: parent
             width: parent.width*2 - (Kirigami.Units.gridUnit * 4)
             iconName: lliurexAutoUpgradeWidget.iconNamePh
-            text:lliurexAutoUpgradeWidget.subToolTip
+            text:lliurexAutoUpgradeWidget.messagePh
         }
 
         PC3.Button{
