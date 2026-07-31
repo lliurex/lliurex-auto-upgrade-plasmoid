@@ -109,7 +109,7 @@ private:
     QString lastUpgradeDownloaded;
     QString lastUpgradeInstalled;
     QString lastUpgradeItem;
-    /*uint lastNotificationId;*/
+    uint lastNotificationId;
 
     LliurexAutoUpgradeWidgetUtils *m_utils;
     QPointer<KNotification> m_notification;

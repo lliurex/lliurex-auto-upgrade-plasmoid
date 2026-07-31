@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2026-07-30 14:02+0200\n"
-"PO-Revision-Date: 2026-07-30 14:26+0200\n"
+"POT-Creation-Date: 2026-07-31 09:41+0200\n"
+"PO-Revision-Date: 2026-07-31 09:41+0200\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -22,12 +22,12 @@ msgstr ""
 msgid "View installed/updated packages"
 msgstr "Vore paquets instal·lats/actualitzats"
 
-#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:26
+#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:32
 #, kde-format
 msgid "Back to main view"
 msgstr "Torna a la vista principal"
 
-#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:35
+#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:43
 #, kde-format
 msgid "List of installed/updated packages"
 msgstr "Llista de paquets instal·lats/actualitzats"
@@ -161,12 +161,12 @@ msgstr "La instal·lació d'actualitzacions ha superat el seu límit."
 msgid "Error, the update has failed. Canceling process"
 msgstr "Error, l'actualització ha fallat. Cancel·lant el procés"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:274
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:278
 #, kde-format
 msgid "Unable to get information from LliureX-Auto-Upgrade"
 msgstr "No és possible obtindre informació de LliureX-Auto-Upgrade"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:349
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:350
 #, kde-format
 msgid "LliureX-Auto-Upgrade is not enabled in this computer"
 msgstr "LliureX-Auto-Upgrade no esta disponible en este equip"

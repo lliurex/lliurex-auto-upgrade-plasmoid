@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lliurexautoupgrade \n"
 "Report-Msgid-Bugs-To: http://lliurex.net\n"
-"POT-Creation-Date: 2026-07-30 14:02+0200\n"
+"POT-Creation-Date: 2026-07-31 09:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,12 +22,12 @@ msgstr ""
 msgid "View installed/updated packages"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:26
+#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:32
 #, kde-format
 msgid "Back to main view"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:35
+#: ../applets/lliurexautoupgrade/package/contents/ui/LatestPkg.qml:43
 #, kde-format
 msgid "List of installed/updated packages"
 msgstr ""
@@ -157,12 +157,12 @@ msgstr ""
 msgid "Error, the update has failed. Canceling process"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:274
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:278
 #, kde-format
 msgid "Unable to get information from LliureX-Auto-Upgrade"
 msgstr ""
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:349
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:350
 #, kde-format
 msgid "LliureX-Auto-Upgrade is not enabled in this computer"
 msgstr ""

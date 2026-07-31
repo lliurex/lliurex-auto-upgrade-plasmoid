@@ -334,7 +334,7 @@ void LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
 QString LliurexAutoUpgradeWidgetUtils::getLliurexVersion(){
 
     QProcess process;
-    process.start("lliurex-version");
+    process.start("lliurex-version",QStringList());
     if (process.waitForFinished(3000)){
         QString output=QString::fromUtf8(process.readAllStandardOutput()).trimmed();
         QStringList parts=output.split(",");

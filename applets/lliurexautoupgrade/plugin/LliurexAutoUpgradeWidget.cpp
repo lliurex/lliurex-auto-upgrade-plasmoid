@@ -81,9 +81,9 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
     bool useFootText = false;
     bool useUpdateFootText = false;
 
-    bool sendNotification = false;
+    bool showNotification = false;
+    bool persistentNotification=false;
     QString eventId;
-    KNotification::NotificationFlags flags=KNotification::CloseOnTimeout;
 
     qDebug()<<"ITEM: "<<upgradeItem;
 
@@ -100,9 +100,9 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::InstallingPackages:
             notificationBody = i18n("Installing packages");
             appendWarning = true;
-            sendNotification = true;
+            showNotification = true;
+            persistentNotification=true;
             eventId=QStringLiteral("InstallAction");
-            flags = KNotification::Persistent;
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::PackagesInstalled:
@@ -110,7 +110,7 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             icon = "lliurex-auto-upgrade-ok";
             useFootText = true;
             useHeadText = true;
-            sendNotification=true;
+            showNotification=true;
             eventId=QStringLiteral("InstallAction");
             break;
 
@@ -171,9 +171,9 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdatingComponent:
             notificationBody=i18n("Installing updates for %1",upgradeItem);
             appendWarning = true;
-            sendNotification=true;
+            showNotification=true;
+            persistentNotification=true;
             eventId=QStringLiteral("UpdateAction");
-            flags = KNotification::Persistent;
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::ComponentUpdated:
@@ -182,7 +182,7 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             lastUpgradeItem=upgradeItem;
             useHeadText=true;
             useUpdateFootText=true;
-            sendNotification=true;
+            showNotification=true;
             showUpdatedNotification=true;
             eventId=QStringLiteral("InstallAction");
             break;
@@ -194,10 +194,10 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             useFootText=true;
             lastUpgradeItem="";
             if (showUpdatedNotification){
-                sendNotification=true;
+                showNotification=true;
                 showUpdatedNotification=false;
             }
-            eventId=QStringLiteral("InstallAction");
+            eventId=QStringLiteral("UpdateAction");
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdateLimit:
@@ -222,17 +222,21 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             return;
     }
 
-    if (sendNotification){
+    if (showNotification){
         QString titleText= notificationBody;
         if (appendWarning){
             titleText=titleText % ". " % turnOffWarning;
         }
-        m_notification = new KNotification(eventId, flags, this);
-        m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
-        m_notification->setTitle(titleText);
-        m_notification->setText("");
-        m_notification->setIconName(icon);
-        m_notification->sendEvent();
+        if (persistentNotification){
+            sendNotification();
+        }else{
+            m_notification = new KNotification(eventId, KNotification::CloseOnTimeout, this);
+            m_notification->setComponentName(QStringLiteral("lliurexautoupgrade"));
+            m_notification->setTitle(titleText);
+            m_notification->setText("");
+            m_notification->setIconName(icon);
+            m_notification->sendEvent();
+        }
     }
    
     if (useFootText){
@@ -281,7 +285,6 @@ void LliurexAutoUpgradeWidget::disableApplet(){
 
 }
 
-/* Alternative if permanent notification dont close
 void LliurexAutoUpgradeWidget::sendNotification(){
     
    if (QDBusConnection::sessionBus().isConnected()) {
@@ -305,10 +308,10 @@ void LliurexAutoUpgradeWidget::sendNotification(){
         }
     }
 }
-*/
+
 void LliurexAutoUpgradeWidget::closeAllNotifications(){
 
-    /*uint referenceId=0;*/
+    uint referenceId=0;
 
     if (m_notification){
         m_notification->close();
@@ -316,7 +319,6 @@ void LliurexAutoUpgradeWidget::closeAllNotifications(){
         m_notification=nullptr;
     }
     
-    /* Alternative if permanent notification dont close
     if (referenceId<lastNotificationId){
         if (QDBusConnection::sessionBus().isConnected()) {
             QDBusMessage msg=QDBusMessage::createMethodCall("org.freedesktop.Notifications",
@@ -328,7 +330,6 @@ void LliurexAutoUpgradeWidget::closeAllNotifications(){
             QDBusConnection::sessionBus().send(msg);
         }
     }
-    */
 }
 
 LliurexAutoUpgradeWidget::TrayStatus LliurexAutoUpgradeWidget::status() const
