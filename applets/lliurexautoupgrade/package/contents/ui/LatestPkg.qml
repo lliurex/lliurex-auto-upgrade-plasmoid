@@ -13,7 +13,7 @@ Item {
     ColumnLayout {
         id: mainLayout
         anchors.fill: parent
-        anchors.bottomMargin:20
+        anchors.bottomMargin:25
         spacing: 15
 
         RowLayout {

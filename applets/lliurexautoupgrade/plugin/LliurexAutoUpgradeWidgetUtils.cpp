@@ -296,7 +296,7 @@ QString LliurexAutoUpgradeWidgetUtils::getWaitTimeForUpgrade(QString &message){
 
     static const QRegularExpression regex(R"(\b(\d+)\s+seconds\b)");
 
-    QRegularExpressionMatch match=regex.match(&message);
+    QRegularExpressionMatch match=regex.match(message);
 
     if (match.hasMatch()){
         return match.captured(1);
