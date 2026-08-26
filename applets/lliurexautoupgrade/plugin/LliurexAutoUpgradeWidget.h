@@ -3,8 +3,9 @@
 
 #include <QObject>
 #include <QPointer>
-#include <KNotification>
 #include <QDBusInterface>
+#include <QDBusMessage>
+#include <QDBusError>
 
 #include "LliurexAutoUpgradeWidgetUtils.h"
 
@@ -40,6 +41,7 @@ public:
     };
 
     LliurexAutoUpgradeWidget(QObject *parent = nullptr);
+    ~LliurexAutoUpgradeWidget();
 
     TrayStatus status() const;
     void changeTryIconState (int state);
@@ -118,12 +120,16 @@ private:
     void disableApplet();
     void closeAllNotifications();
     void sendNotification();
+    void closeNotificationForced();
 
 private slots:
     
     void handleStartFinished(bool showWidget,bool startOk);
     void manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString& lastExecutionTime,QString& waitTime,QString& upgradeItem,QString& lliurexVersion);
     void enableWidget(bool success,QString error);
+    void onNotificationClosed (uint id, uint reason);
+    void onNotificationSent (const QDBusMessage &reply);
+    void onNotificationError (const QDBusError &error);
 
 };
 
