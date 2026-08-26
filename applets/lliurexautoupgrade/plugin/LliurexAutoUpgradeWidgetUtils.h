@@ -42,9 +42,10 @@ public:
 
    QString m_unitName="lliurex-auto-upgrade.service";
    QStringList lastInstalledPkg;
+   
+   bool startListener();
   
    void startWidget();
-   bool startListener();
    void createSubscription();
 
 signals:
@@ -60,20 +61,23 @@ private:
 
     bool checkFailed=false;
     bool updatedFailed=false;
+
     QString lastUpdate;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
     QString pkgInstalledLog="/run/lliurex-auto-upgrade/installed_packages.log";
     QStringList upgradeItems={"lliurex","security","ubuntu","kernel"};
 
     bool showWidget();
-    void getPkgsInstalledInSession();
     bool createInterface();
-    void getLastInstalledPkg(QString instaledPkg);
+
     QString getLastExecutionTime();
     QString getUpgradeItem(QString &message);
     QString getWaitTimeForUpgrade(QString &message);
     QString getLliurexVersion();
 
+    void getPkgsInstalledInSession();
+    void getLastInstalledPkg(QString instaledPkg);
+    
 private slots:
 
     void onPropertiesChanged(const QString &interfaceName, const QVariantMap &changedProperties, const QStringList &invalidatedProperties);
