@@ -13,13 +13,18 @@
 #include <QTime>
 #include <QtConcurrent>
 #include <QPointer>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QProcess>
 
 #include <tuple>
 #include <sys/types.h>
+#include <algorithm>
 
 
 LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
     : QObject(parent)
+    , actionCode(UpgradeAction::ReadyToCheck)
        
 {
 
@@ -153,39 +158,87 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
             if (newState!=lastUpdate){
                 lastUpdate=newState;
                 QString lastExecution="";
+                QString upgradeItem="";
+                QString waitTime="";
+                QString lliurexVersion="";
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
                 if (newState.contains("First run")) {
                     if (!checkFailed){
-                        actionCode=1;
+                        actionCode=UpgradeAction::ReadyToCheck;
                     }else{
-                        actionCode=6;
-                        lastExecution=getLastExecutionTime();
+                        actionCode=UpgradeAction::ProcessError;
                     }
                 }else if (newState.contains("dpkg to finish")){
-                    actionCode=1;
+                    actionCode=UpgradeAction::ReadyToCheck;
                 }else if (newState.contains("remote file")){
-                    actionCode=2;
+                    actionCode=UpgradeAction::CheckingStatus;
                 }else if (newState.contains("before installing")){
-                    actionCode=3;
+                    actionCode=UpgradeAction::InstallingPackages;
                 }else if (newState.contains("Installing packages")){
-                    actionCode=3;
-                    QString tmpPkg=newState.split(": ")[1];
-                    getLastInstalledPkg(tmpPkg);
+                    actionCode=UpgradeAction::InstallingPackages;
+                    QStringList tokens=newState.split(": ");
+                    if (tokens.size() > 1 ){
+                        getLastInstalledPkg(tokens[1]);
+                    }
                 }else if (newState.contains("Installing finished")){
                     checkFailed=false;
-                    actionCode=4;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::PackagesInstalled;
                 }else if (newState.contains("Nothing to execute")){
                     checkFailed=false;
-                    actionCode=5;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::NoChanges;
                 }else if (newState.contains("Failed to")){
                     checkFailed=true;
-                    actionCode=6;
-                    lastExecution=getLastExecutionTime();
+                    actionCode=UpgradeAction::ProcessError;
+                }else if (newState.contains("Starting unattended upgrades")){
+                    if (!updatedFailed){
+                        actionCode=UpgradeAction::StartingAutoUpgrade;
+                        waitTime=getWaitTimeForUpgrade(newState);
+                    }else{
+                        actionCode=UpgradeAction::UpdatedError;
+                    }
+                }else if (newState.contains("Gathering unattended upgrade")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::GatheringPackages;
+                }else if (newState.contains("upgrade is downloading")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::DownloadingComponent;
+                    upgradeItem=getUpgradeItem(newState);
+                }else if (newState.contains("have been downloaded")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::ComponentDownloaded;
+                    upgradeItem=getUpgradeItem(newState);
+                }else if (newState.contains("Waiting until next reboot to install")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::FullDownloadedWait;
+                }else if (newState.contains("downloaded every component")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::FullDownloaded;
+                }else if (newState.contains("upgrade download limit reached")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::DownloadLimit;
+                }else if (newState.contains("upgrade is installing")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::UpdatingComponent;
+                    upgradeItem=getUpgradeItem(newState);
+                }else if (newState.contains("have been installed")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::ComponentUpdated;
+                    upgradeItem=getUpgradeItem(newState);
+                }else if (newState.contains("installed every component.")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::SystemUpdated;
+                    lliurexVersion=getLliurexVersion();
+                }else if (newState.contains("upgrade install limit reached")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::UpdateLimit;
+                }else if (newState.contains("upgrade failed")){
+                    updatedFailed=true;
+                    actionCode=UpgradeAction::UpdatedError;
                 }
 
-                emit unitStateChanged(actionCode,lastExecution);
+                lastExecution=getLastExecutionTime();
+
+                emit unitStateChanged(actionCode,lastExecution,waitTime,upgradeItem,lliurexVersion);
             }
         }
       
@@ -221,6 +274,37 @@ QString LliurexAutoUpgradeWidgetUtils::getLastExecutionTime(){
 
 }
 
+QString LliurexAutoUpgradeWidgetUtils::getUpgradeItem(QString &message){
+
+    auto it = std::find_if(upgradeItems.begin(),upgradeItems.end(),[&message](const QString &upgradeItem){
+        return message.contains(upgradeItem,Qt::CaseInsensitive);   
+    });
+
+    if (it != upgradeItems.end()){
+        QString item = *it;
+        if (!item.isEmpty()){
+            return item.at(0).toUpper() + item.mid(1);
+        }
+        return item;
+    }
+
+    return QString();
+
+}
+
+QString LliurexAutoUpgradeWidgetUtils::getWaitTimeForUpgrade(QString &message){
+
+    static const QRegularExpression regex(R"(\b(\d+)\s+seconds\b)");
+
+    QRegularExpressionMatch match=regex.match(message);
+
+    if (match.hasMatch()){
+        return match.captured(1);
+    }
+
+    return QString();
+}
+
 void LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
 
     QFile pkgsLog(pkgInstalledLog);
@@ -245,5 +329,21 @@ void LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
             pkgsLog.close();
         }
     }
-
 }
+
+QString LliurexAutoUpgradeWidgetUtils::getLliurexVersion(){
+
+    QProcess process;
+    process.start("lliurex-version",QStringList());
+    if (process.waitForFinished(3000)){
+        QString output=QString::fromUtf8(process.readAllStandardOutput()).trimmed();
+        QStringList parts=output.split(",");
+        if (!parts.isEmpty()){
+            return parts.last().trimmed();
+        }
+    }
+
+    return QString();
+}
+
+
