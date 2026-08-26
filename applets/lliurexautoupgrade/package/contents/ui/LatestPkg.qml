@@ -1,67 +1,78 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasmoid
 import org.kde.plasma.components as Components
-import org.kde.plasma.components as PC3
-import org.kde.kirigami as Kirigami
 
-Rectangle{
-	color:"transparent"
-	GridLayout{
-        id:filesLayout
-        rows: 2
-        flow: GridLayout.TopToBottom
-        rowSpacing:10
-        width:parent.width
-        RowLayout{
-            id:headLatestPkg
-            Layout.fillWidth:true
-            PC3.ToolButton {
-                height:35
-                width:35
-                icon.name:"arrow-left.svg"
-                Layout.rightMargin:filesLayout.width/3-35-headPkgText.text.length
-                PC3.ToolTip{
-                    id:backTP   
-                    text:i18n("Back to main view")
+Item {
+    id: root
+    implicitWidth: 400
+    implicitHeight: 320
+
+    ColumnLayout {
+        id: mainLayout
+        anchors.fill: parent
+        anchors.bottomMargin:25
+        spacing: 15
+
+        RowLayout {
+            id: headLatestPkg
+            Layout.fillWidth: true
+            spacing: 10
+
+            Components.ToolButton {
+                id: backButton
+                icon.name: "arrow-left"
+                Layout.preferredWidth: 35
+                Layout.preferredHeight: 35
+
+                Components.ToolTip {
+                    id: backTP
+                    text: i18n("Back to main view")
                 }
-                onClicked:{
+
+                onClicked: {
                     backTP.hide()
                     lliurexAutoUpgradeWidget.manageNavigation(0)
-                } 
-            } 
-            Components.Label{
-                id:headPkgText
-                text:i18n("List of installed/updated packages")
-                font.italic:true
-                font.pointSize:11
-                Layout.fillWidth:true
-                Layout.alignment:Qt.AlignHCenter
-            }
-            
-        }
-        PC3.ScrollView {
-            Layout.topMargin:10
-            Layout.bottomMargin:10
-            Layout.leftMargin:15
-            Layout.rightMargin:10
-            implicitWidth:parent.width-10
-            implicitHeight:250
-            ListView{
-                id:listView
-                focus:true
-                model:lliurexAutoUpgradeWidget.lastInstalledPkg
-                delegate: Components.Label {
-                    text: "- "+modelData
-                    font.pointSize:11
-                    height:30
-                    width:listView.width-10
-                    elide:Text.ElideMiddle
                 }
-                              
+            }
+
+            Components.Label {
+                id: headPkgText
+                text: i18n("List of installed/updated packages")
+                font.italic: true
+                font.pointSize: 11
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+
+        Components.ScrollView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.leftMargin: 5
+            Layout.rightMargin: 5
+
+            ListView {
+                id: listView
+                focus: true
+                clip: true
+                model: lliurexAutoUpgradeWidget.lastInstalledPkg
+
+                delegate: Components.ItemDelegate {
+                    width: listView.width
+                    height: 35
+
+                    contentItem: Components.Label {
+                        text: "• " + modelData
+                        font.pointSize: 11
+                        elide: Text.ElideMiddle
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
             }
         }
     }
-
 }

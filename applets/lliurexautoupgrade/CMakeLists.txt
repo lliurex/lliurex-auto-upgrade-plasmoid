@@ -43,5 +43,7 @@ install(FILES "icons/lliurex-auto-upgrade-error.svg"
         DESTINATION ${KDE_INSTALL_ICONDIR}/hicolor/scalable/apps/)
 install(FILES "icons/lliurex-auto-upgrade-warning.svg"
         DESTINATION ${KDE_INSTALL_ICONDIR}/hicolor/scalable/apps/)
+install(FILES "icons/lliurex-auto-upgrade-running.svg"
+        DESTINATION ${KDE_INSTALL_ICONDIR}/hicolor/scalable/apps/)
 install(FILES "knotifications6/lliurexautoupgrade.notifyrc"
         DESTINATION ${KDE_INSTALL_KNOTIFYRCDIR})
