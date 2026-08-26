@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.13) jammy; urgency=medium
+
+  * Changed to report on the unattended upgrade process
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 26 Aug 2026 09:54:20 +0200
+
 lliurex-auto-upgrade-plasmoid (0.1.12) jammy; urgency=medium
 
   * Changed so that the cache doesn't have to be cleared on startup
