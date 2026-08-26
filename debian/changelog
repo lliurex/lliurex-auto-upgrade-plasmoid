@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (1.3.7) noble; urgency=medium
+
+  * Changed to report on the unattended upgrade process
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 26 Aug 2026 09:51:26 +0200
+
 lliurex-auto-upgrade-plasmoid (1.3.6) noble; urgency=medium
 
   * Changed to that cache dosn't have to be cleared on the startup
