@@ -135,6 +135,34 @@ void LliurexAutoUpgradeWidgetUtils::createSubscription(){
                     SLOT(onPropertiesChanged(const QString&, const QVariantMap&, const QStringList&)));
 
                 if (connected){
+
+                    QDBusInterface unitInterface("org.freedesktop.systemd1",
+                                                 path,
+                                                 "org.freedesktop.DBus.Properties",
+                                                 QDBusConnection::systemBus());
+
+                    if (unitInterface.isValid()) {
+                        QDBusMessage reply = unitInterface.call("Get",
+                                                                "org.freedesktop.systemd1.Service",
+                                                                "StatusText");
+
+                        if (!reply.errorMessage().isEmpty()) {
+                            qDebug() << "[LLIUREX-AUTO-UPGRADE]: Error gathering init status" << reply.errorMessage();
+                        } else {
+                            QVariant firstArgument = reply.arguments().at(0).value<QDBusVariant>().variant();
+                            QString initialStatusText = firstArgument.toString();
+
+                            if (!initialStatusText.isEmpty()) {
+                                qDebug() << "[LLIUREX-AUTO-UPGRADE]: Init state gathered:" << initialStatusText;
+
+                                QVariantMap simulatedProperties;
+                                simulatedProperties.insert("StatusText", initialStatusText);
+
+                                this->onPropertiesChanged("org.freedesktop.systemd1.Unit", simulatedProperties, QStringList());
+                            }
+                        }
+                    }
+
                     emit subscriptionFinished(true, "");
                 }else{
                     emit subscriptionFinished(false, "DBusConnection fails");
