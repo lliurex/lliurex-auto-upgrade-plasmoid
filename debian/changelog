@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.14) jammy; urgency=medium
+
+  * Changed to check the last status of lliurex-auto-upgrade service before widget startup
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 01 Sep 2026 08:49:07 +0200
+
 lliurex-auto-upgrade-plasmoid (0.1.13) jammy; urgency=medium
 
   * Changed to report on the unattended upgrade process
