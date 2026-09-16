@@ -240,7 +240,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                     actionCode=UpgradeAction::FullDownloadedWait;
                 }else if (newState.contains("downloaded every component")){
                     updatedFailed=false;
-                    actionCode=UpgradeAction::FullDownloaded;
+                    actionCode=UpgradeAction::FullDownloadedWait;
                 }else if (newState.contains("upgrade download limit reached")){
                     updatedFailed=false;
                     actionCode=UpgradeAction::DownloadLimit;
@@ -262,6 +262,10 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 }else if (newState.contains("upgrade failed")){
                     updatedFailed=true;
                     actionCode=UpgradeAction::UpdatedError;
+                }else if (newState.contains("System is up to date.")){
+                    updatedFailed=false;
+                    actionCode=UpgradeAction::SystemUpdated;
+                    lliurexVersion=getLliurexVersion();
                 }
 
                 lastExecution=getLastExecutionTime();

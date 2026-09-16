@@ -111,6 +111,7 @@ private:
     QString notificationHead;
     QString notificationFoot;
     QString updateFoot;
+    QString restartFoot;
     QString updateLimitFoot;
     QString turnOffWarning;
     QString lastUpgradeDownloaded;
