@@ -1,3 +1,10 @@
+lliurex-auto-upgrade-plasmoid (0.1.15) jammy; urgency=medium
+
+  * Changed to support new operation of lliurex-auto-upgrade 
+  * Improved persistent notification management
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 16 Sep 2026 13:46:57 +0200
+
 lliurex-auto-upgrade-plasmoid (0.1.14) jammy; urgency=medium
 
   * Changed to check the last status of lliurex-auto-upgrade service before widget startup
