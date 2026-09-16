@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 09:48+0200\n"
-"PO-Revision-Date: 2026-08-26 09:50+0200\n"
+"POT-Creation-Date: 2026-09-16 13:52+0200\n"
+"PO-Revision-Date: 2026-09-16 13:56+0200\n"
 "Last-Translator: lliurex <lliurex@lliurex.net>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: ../applets/lliurexautoupgrade/package/contents/ui/InfoView.qml:35
 #, kde-format
@@ -38,7 +38,7 @@ msgid "LliureX-Auto-Upgrade"
 msgstr "LliureX-Auto-Upgrade"
 
 #: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:24
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:107
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:109
 #, kde-format
 msgid "Ready to check status"
 msgstr "Preparado para comprobar el estado"
@@ -55,118 +55,123 @@ msgstr "Esperando la siguiente comprobación"
 
 #: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:27
 #, kde-format
-msgid "The update process will continue in the next restart"
-msgstr "El proceso de actualización continuará en el siguiente reinicio"
+msgid "The update process will continue in the next execution"
+msgstr "El proceso de actualización continuará en la siguiente ejecución"
 
 #: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:28
 #, kde-format
-msgid "Will continue in the next restart"
-msgstr "Continuará en el siguiente reinicio"
+msgid "The update process will continue in the next restart"
+msgstr "El proceso de actualización continuará en el siguiente reinicio"
 
 #: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:29
+#, kde-format
+msgid "Will continue in the next execution"
+msgstr "Continuará en la siguiente ejecución"
+
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:30
 #, kde-format
 msgid "Do not turn off or restart the computer"
 msgstr "No apague ni reinicie el equipo"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:30
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:31
 #, kde-format
 msgid "Last component downloaded:"
 msgstr "Último componente descargado:"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:31
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:32
 #, kde-format
 msgid "Last component updated:"
 msgstr "Último componente actualizado:"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:112
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:114
 #, kde-format
 msgid "Checking status"
 msgstr "Comprobando el estado"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:116
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:118
 #, kde-format
 msgid "Installing packages"
 msgstr "Instalando paquetes"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:124
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:127
 #, kde-format
 msgid "Updates installed"
 msgstr "Actualizaciones instaladas"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:133
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:137
 #, kde-format
 msgid "No changes"
 msgstr "Sin cambios"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:140
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:145
 #, kde-format
 msgid "Error, process not completed"
 msgstr "Error, proceso no completado"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:147
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:153
 #, kde-format
 msgid "Ready to start unattended upgrade in %1 seconds"
 msgstr "La actualización automática comenzará en %1 segundos"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:152
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:158
 #, kde-format
 msgid "Gathering the package list for the update"
 msgstr "Obteniendo la lista de paquetes para la actualización"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:156
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:162
 #, kde-format
 msgid "Downloading updates for %1"
 msgstr "Descargando actualizaciones para %1"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:160
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:166
 #, kde-format
 msgid "Updates for %1 have been downloaded"
 msgstr "Las actualizaciones para %1 han sido descargadas"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:165
 #: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:171
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:177
 #, kde-format
 msgid "All updates downloaded"
 msgstr "Todas las actualizaciones han sido descargadas"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:177
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:182
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:183
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:188
 #, kde-format
 msgid "The download of updates has reached its limit."
 msgstr "La descarga de actualizaciones ha alcanzado su límite."
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:187
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:193
 #, kde-format
 msgid "Installing updates for %1"
 msgstr "Instalando las actualizaciones para %1"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:195
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:201
 #, kde-format
 msgid "Updates for %1 have been installed"
 msgstr "Las actualizaciones para %1 han sido instaladas"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:206
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:213
 #, kde-format
 msgid "The system is up to date:"
 msgstr "El sistema esta actualizado:"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:220
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:225
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:228
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:233
 #, kde-format
 msgid "The update process has reached its limit."
 msgstr "La instalación de actualizaciones ha alcanzado su límite."
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:230
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:239
 #, kde-format
 msgid "Error, the update has failed. Canceling process"
 msgstr "Error, la actualización ha fallado. Cancelando el proceso"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:293
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:302
 #, kde-format
 msgid "Unable to get information from LliureX-Auto-Upgrade"
 msgstr "No es posible obtener información de LliureX-Auto-Upgrade"
 
-#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:396
+#: ../applets/lliurexautoupgrade/plugin/LliurexAutoUpgradeWidget.cpp:403
 #, kde-format
 msgid "LliureX-Auto-Upgrade is not enabled in this computer"
 msgstr "LliureX-Auto-Upgrade no esta disponible en este equipo"
