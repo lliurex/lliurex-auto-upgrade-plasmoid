@@ -94,10 +94,10 @@ private:
     bool createInterface();
 
     QString getLastExecutionTime();
-    QString getUpgradeItem(QString &message);
-    QString getWaitTimeForUpgrade(QString &message);
-    QString getLliurexVersion();
-
+    QString getUpgradeItem(const QString &message);
+    QString getWaitTimeForUpgrade(const QString &message);
+    
+    void getLliurexVersion();
     void getLastInstalledPkg(QString instaledPkg);
     
 private slots:
