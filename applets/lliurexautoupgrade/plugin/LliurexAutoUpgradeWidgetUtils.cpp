@@ -1,7 +1,10 @@
 #include "LliurexAutoUpgradeWidgetUtils.h"
 
+#include <QCoreApplication>
+#include <QtConcurrent>
 #include <QFile>
-#include <QDebug>
+#include <QFuture>
+#include <QFutureWatcher>
 #include <QList>
 #include <KLocalizedString>
 #include <QDBusConnection>
@@ -11,20 +14,23 @@
 #include <QDBusReply>
 #include <QDate>
 #include <QTime>
-#include <QtConcurrent>
+#include <QThreadPool>
 #include <QPointer>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QProcess>
 
-#include <tuple>
-#include <sys/types.h>
-#include <algorithm>
 
-
-LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
-    : QObject(parent)
+LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils()
+    : QObject(nullptr)
+    , managerInterface(nullptr)
     , actionCode(UpgradeAction::ReadyToCheck)
+    , isSubscribed(false)
+    , isInitializing(false)
+    , isSubscribing(false)
+    , interfaceCreated(false)
+    , upgradeItems({"lliurex","security","ubuntu","kernel"})
+
        
 {
 
@@ -32,63 +38,89 @@ LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
 
 void LliurexAutoUpgradeWidgetUtils::startWidget(){
 
-    QPointer<LliurexAutoUpgradeWidgetUtils>safeThis(this);
+    if (interfaceCreated && managerInterface && managerInterface->isValid()){
+        emit startWidgetFinished(true,true);
+        return;
+    }
 
-    QtConcurrent::run([safeThis]() {
+    if (isInitializing){
+	qDebug() << "[LLIUREX-AUTO-UPGRADE]: Already exists an initialization process";
+        return;
+    }
 
-        if (!safeThis){
-            return;
+    isInitializing=true;
+
+    QFuture<QPair<bool,QSet<QString>>>future=QtConcurrent::run(QThreadPool::globalInstance(),[](const QString &logPath,const QString &tokenPath) {
+        QPair<bool,QSet<QString>>result;
+
+        result.first=!QFile::exists(tokenPath);
+
+        if (!result.first){
+            return result;
         }
 
-        bool showWidget=false;
-        bool startOk=false;
+        QFile file(logPath);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
+            QTextStream in(&file);
+            QString content=in.readAll();
 
-        try{
-            showWidget=safeThis->showWidget();
-            if (showWidget){
-                safeThis->getPkgsInstalledInSession();
-                startOk=safeThis->createInterface();
+            QStringList tmpPkg=content.split(QRegularExpression("\\s+"),Qt::SkipEmptyParts);
+
+            result.second=QSet<QString>(tmpPkg.begin(),tmpPkg.end());
+        }
+
+        return result;
+    },this->pkgInstalledLog,this->disableAutoUpgrade);
+
+    auto watcher = new QFutureWatcher<QPair<bool,QSet<QString>>>(this);
+    connect(watcher, &QFutureWatcher<QPair<bool,QSet<QString>>>::finished, this, [this, watcher]() {
+        
+        auto result=watcher->result();
+        bool showWidgetResult = result.first;
+        bool startOk = false;
+
+        if (showWidgetResult) {
+            this->lastInstalledPkg=result.second;
+            try {
+                startOk = this->createInterface();
+            } catch (const std::exception& e) {
+                qDebug() << "[LLIUREX-AUTO-UPGRADE]: Error initializing widget: " << e.what();
             }
-        }catch (std::exception& e){
-            qDebug()<<"[LLIUREX-AUTO-UPGRADE]: Error initializing widget: " <<e.what();
-        } 
-
-        if (safeThis){
-            emit safeThis->startWidgetFinished(showWidget,startOk);
         }
 
+        this->interfaceCreated = startOk; 
+        this->isInitializing = false;
+
+        emit this->startWidgetFinished(showWidgetResult, startOk);
+
+        watcher->deleteLater();
     });
+
+    watcher->setFuture(future);
 }
 
-bool LliurexAutoUpgradeWidgetUtils::showWidget(){
+bool LliurexAutoUpgradeWidgetUtils::createInterface(){
 
-    QFile disableToken;
-    disableToken.setFileName(disableAutoUpgrade);
-
-    if (disableToken.exists()){
-        return false;
-    }else{
+    if (managerInterface && managerInterface->isValid()) {
         return true;
     }
-}  
-
-bool LliurexAutoUpgradeWidgetUtils::createInterface(){
 
     if (!QDBusConnection::systemBus().isConnected()) {
         qDebug() << "[LLIUREX-AUTO-UPGRADE]: Cannot connect to the system D-Bus!";
         return false;
-    }else{
-        managerInterface=new QDBusInterface("org.freedesktop.systemd1",
+    }
+
+    if (managerInterface){
+        delete managerInterface;
+        managerInterface=nullptr;
+    }
+    
+    managerInterface=new QDBusInterface("org.freedesktop.systemd1",
                                         "/org/freedesktop/systemd1",
                                         "org.freedesktop.systemd1.Manager",
-                                        QDBusConnection::systemBus());
+                                        QDBusConnection::systemBus(),qApp);
        
-        if (managerInterface->isValid()){
-            return true;
-        }else{
-            return false;
-        }
-    }
+    return managerInterface->isValid();   
 
 }
 
@@ -98,6 +130,20 @@ void LliurexAutoUpgradeWidgetUtils::createSubscription(){
         emit subscriptionFinished(false,"DBus interface not valid");
         return;
     }
+
+    if (isSubscribed){
+        emit subscriptionFinished(true,"");
+        emit unitStateChanged(actionCode,lastExecution,waitTime,upgradeItem,lliurexVersion);
+        return;
+    }
+
+    if (isSubscribing){
+        qDebug() << "[LLIUREX-AUTO-UPGRADE]: Already exists a subscribe process";
+        return;
+    }
+
+    isSubscribing=true;
+
     QDBusPendingCall subscriptionCall = managerInterface->asyncCall("Subscribe");
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(subscriptionCall,this);
 
@@ -109,6 +155,7 @@ void LliurexAutoUpgradeWidgetUtils::createSubscription(){
         self->deleteLater();
 
         if (subReply.isError()){
+            isSubscribing=false;
             emit subscriptionFinished(false,subReply.error().message());
             return;
         }
@@ -123,6 +170,8 @@ void LliurexAutoUpgradeWidgetUtils::createSubscription(){
             QDBusPendingReply<QDBusObjectPath> unitReply = *uSelf;
             uSelf->deleteLater();
 
+            isSubscribing=false;
+
             if (!unitReply.isError()) {
                 QString path = unitReply.value().path();
 
@@ -135,7 +184,7 @@ void LliurexAutoUpgradeWidgetUtils::createSubscription(){
                     SLOT(onPropertiesChanged(const QString&, const QVariantMap&, const QStringList&)));
 
                 if (connected){
-
+                    isSubscribed=true;
                     QDBusInterface unitInterface("org.freedesktop.systemd1",
                                                  path,
                                                  "org.freedesktop.DBus.Properties",
@@ -149,25 +198,29 @@ void LliurexAutoUpgradeWidgetUtils::createSubscription(){
                         if (!reply.errorMessage().isEmpty()) {
                             qDebug() << "[LLIUREX-AUTO-UPGRADE]: Error gathering init status" << reply.errorMessage();
                         } else {
-                            QVariant firstArgument = reply.arguments().at(0).value<QDBusVariant>().variant();
-                            QString initialStatusText = firstArgument.toString();
+                            if (!reply.arguments().isEmpty()){
+                                QVariant firstArgument = reply.arguments().at(0).value<QDBusVariant>().variant();
+                                QString initialStatusText = firstArgument.toString();
 
-                            if (!initialStatusText.isEmpty()) {
-                                qDebug() << "[LLIUREX-AUTO-UPGRADE]: Init state gathered:" << initialStatusText;
+                                if (!initialStatusText.isEmpty()) {
+                                    qDebug() << "[LLIUREX-AUTO-UPGRADE]: Init state gathered:" << initialStatusText;
 
-                                QVariantMap simulatedProperties;
-                                simulatedProperties.insert("StatusText", initialStatusText);
+                                    QVariantMap simulatedProperties;
+                                    simulatedProperties.insert("StatusText", initialStatusText);
 
-                                this->onPropertiesChanged("org.freedesktop.systemd1.Unit", simulatedProperties, QStringList());
+                                    this->onPropertiesChanged("org.freedesktop.systemd1.Unit", simulatedProperties, QStringList());
+                                }
                             }
                         }
                     }
 
                     emit subscriptionFinished(true, "");
                 }else{
+                    isSubscribed=false;
                     emit subscriptionFinished(false, "DBusConnection fails");
                 }
             }else{
+                isSubscribed=false;
                 emit subscriptionFinished(false, unitReply.error().message());
             }
         });
@@ -185,11 +238,14 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
             QString newState = changedProperties["StatusText"].toString();
             if (newState!=lastUpdate){
                 lastUpdate=newState;
-                QString lastExecution="";
-                QString upgradeItem="";
-                QString waitTime="";
-                QString lliurexVersion="";
+                lastExecution="";
+                upgradeItem="";
+                waitTime="";
+                lliurexVersion="";
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Unit" << m_unitName << " StatusText changed to:" << newState;
+                
+                bool requiredLliurexVersion=false;
+                
                 if (newState.contains("First run")) {
                     if (!checkFailed){
                         actionCode=UpgradeAction::ReadyToCheck;
@@ -255,7 +311,7 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 }else if (newState.contains("installed every component.")){
                     updatedFailed=false;
                     actionCode=UpgradeAction::SystemUpdated;
-                    lliurexVersion=getLliurexVersion();
+                    requiredLliurexVersion=true;
                 }else if (newState.contains("upgrade install limit reached")){
                     updatedFailed=false;
                     actionCode=UpgradeAction::UpdateLimit;
@@ -265,12 +321,17 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
                 }else if (newState.contains("System is up to date.")){
                     updatedFailed=false;
                     actionCode=UpgradeAction::SystemUpdated;
-                    lliurexVersion=getLliurexVersion();
+                    requiredLliurexVersion=true;
                 }
 
                 lastExecution=getLastExecutionTime();
 
-                emit unitStateChanged(actionCode,lastExecution,waitTime,upgradeItem,lliurexVersion);
+                if (requiredLliurexVersion){
+                    getLliurexVersion();
+
+                }else{
+                    emit unitStateChanged(actionCode,lastExecution,waitTime,upgradeItem,lliurexVersion);
+                }
             }
         }
       
@@ -279,14 +340,10 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
 void LliurexAutoUpgradeWidgetUtils::getLastInstalledPkg(QString installedPkg)
 {
 
-    QStringList tmpPkg=installedPkg.split(" ");
+    QStringList tmpPkg=installedPkg.split(" ",Qt::SkipEmptyParts);
 
     for (const QString &pkg : tmpPkg){
-        if (!pkg.isEmpty()){
-            if (!lastInstalledPkg.contains(pkg)){
-                lastInstalledPkg.prepend(pkg);
-            }
-        }
+        lastInstalledPkg.insert(pkg);
 
     }
 
@@ -306,7 +363,7 @@ QString LliurexAutoUpgradeWidgetUtils::getLastExecutionTime(){
 
 }
 
-QString LliurexAutoUpgradeWidgetUtils::getUpgradeItem(QString &message){
+QString LliurexAutoUpgradeWidgetUtils::getUpgradeItem(const QString &message){
 
     auto it = std::find_if(upgradeItems.begin(),upgradeItems.end(),[&message](const QString &upgradeItem){
         return message.contains(upgradeItem,Qt::CaseInsensitive);   
@@ -324,7 +381,7 @@ QString LliurexAutoUpgradeWidgetUtils::getUpgradeItem(QString &message){
 
 }
 
-QString LliurexAutoUpgradeWidgetUtils::getWaitTimeForUpgrade(QString &message){
+QString LliurexAutoUpgradeWidgetUtils::getWaitTimeForUpgrade(const QString &message){
 
     static const QRegularExpression regex(R"(\b(\d+)\s+seconds\b)");
 
@@ -337,45 +394,40 @@ QString LliurexAutoUpgradeWidgetUtils::getWaitTimeForUpgrade(QString &message){
     return QString();
 }
 
-void LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
+void LliurexAutoUpgradeWidgetUtils::getLliurexVersion(){
 
-    QFile pkgsLog(pkgInstalledLog);
+    QProcess *process=new QProcess(this);
 
-    if (pkgsLog.exists()){
-        if (pkgsLog.open(QIODevice::ReadOnly)){
-            QTextStream content(&pkgsLog);
-            while (!content.atEnd()){
-                QString tmpLine=content.readLine().remove('\n');
-                if (!tmpLine.isEmpty()){
-                    QStringList tmpPkg=tmpLine.split(" ");
-                    for (const QString &pkg : tmpPkg){
-                        if (!pkg.isEmpty()){
-                            if (!lastInstalledPkg.contains(pkg)){
-                                lastInstalledPkg.prepend(pkg);
-                            }
-                        }
-                    }
-                }
+    connect(process,QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+        this,[this,process](int exitCode,QProcess::ExitStatus exitStatus){
+    
+        QString detectedVersion;
+        if (exitStatus==QProcess::NormalExit && exitCode==0){
+            QString output=QString::fromUtf8(process->readAllStandardOutput()).trimmed();
+            QStringList parts=output.split(",");
+            if (!parts.isEmpty()){
+                detectedVersion= parts.last().trimmed();
             }
-            
-            pkgsLog.close();
         }
-    }
+
+        this->lliurexVersion=detectedVersion;
+
+        emit unitStateChanged(actionCode,lastExecution,waitTime,upgradeItem,lliurexVersion);
+
+        process->deleteLater();
+    });
+
+    process->start("lliurex-version",QStringList());
+   
 }
 
-QString LliurexAutoUpgradeWidgetUtils::getLliurexVersion(){
+QStringList LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession() const{
 
-    QProcess process;
-    process.start("lliurex-version",QStringList());
-    if (process.waitForFinished(3000)){
-        QString output=QString::fromUtf8(process.readAllStandardOutput()).trimmed();
-        QStringList parts=output.split(",");
-        if (!parts.isEmpty()){
-            return parts.last().trimmed();
-        }
-    }
+   QStringList list(lastInstalledPkg.begin(),lastInstalledPkg.end());
+   list.sort();
 
-    return QString();
+   return list; 
+
 }
 
 
