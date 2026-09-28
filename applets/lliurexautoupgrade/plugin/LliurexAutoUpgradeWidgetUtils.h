@@ -16,6 +16,14 @@ class LliurexAutoUpgradeWidgetUtils : public QObject
 
 public:
 
+    static LliurexAutoUpgradeWidgetUtils& instance(){
+        static LliurexAutoUpgradeWidgetUtils _instance;
+        return _instance;
+    }
+
+    LliurexAutoUpgradeWidgetUtils(const LliurexAutoUpgradeWidgetUtils&)=delete;
+    LliurexAutoUpgradeWidgetUtils& operator=(const LliurexAutoUpgradeWidgetUtils&) =delete;
+
     enum class UpgradeAction {
         ReadyToCheck = 1,
         CheckingStatus = 2,
@@ -38,8 +46,6 @@ public:
     };    
    
 
-   LliurexAutoUpgradeWidgetUtils(QObject *parent = nullptr);
-
    QString m_unitName="lliurex-auto-upgrade.service";
    QStringList lastInstalledPkg;
    
@@ -56,16 +62,28 @@ signals:
 
 private:
 
-    UpgradeAction actionCode;
+    explicit LliurexAutoUpgradeWidgetUtils(QObject *parent = nullptr);
+
+    UpgradeAction actionCode=UpgradeAction::ReadyToCheck;
     QDBusInterface *managerInterface;
 
     bool checkFailed=false;
     bool updatedFailed=false;
+    
+    bool isSubscribed=false;
+    bool isInitializing=false;
+    bool isSubscribing=false;
+    bool interfaceCreated=false;
 
     QString lastUpdate;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
     QString pkgInstalledLog="/run/lliurex-auto-upgrade/installed_packages.log";
     QStringList upgradeItems={"lliurex","security","ubuntu","kernel"};
+
+    QString lastExecution="";
+    QString upgradeItem="";
+    QString waitTime="";
+    QString lliurexVersion="";
 
     bool showWidget();
     bool createInterface();

@@ -15,7 +15,7 @@
 
 LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     : QObject(parent)
-    , m_utils(new LliurexAutoUpgradeWidgetUtils(this))
+    , m_utils(&LliurexAutoUpgradeWidgetUtils::instance())
 
    
 {
@@ -305,7 +305,7 @@ void LliurexAutoUpgradeWidget::disableApplet(){
     setIconNamePh("lliurex-auto-upgrade-error");
     setSubToolTip(notificationBody);
     setMessagePh(notificationBody);
-    changeTryIconState(0);
+    changeTryIconState(1);
 
 }
 
