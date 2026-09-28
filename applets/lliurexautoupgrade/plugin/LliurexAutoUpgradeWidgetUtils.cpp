@@ -5,7 +5,6 @@
 #include <QFile>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <QDebug>
 #include <QList>
 #include <KLocalizedString>
 #include <QDBusConnection>
@@ -21,12 +20,8 @@
 #include <QRegularExpressionMatch>
 #include <QProcess>
 
-#include <tuple>
-#include <sys/types.h>
-#include <algorithm>
 
-
-LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
+LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils()
     : QObject(nullptr)
     , managerInterface(nullptr)
     , actionCode(UpgradeAction::ReadyToCheck)
@@ -34,6 +29,8 @@ LliurexAutoUpgradeWidgetUtils::LliurexAutoUpgradeWidgetUtils(QObject *parent)
     , isInitializing(false)
     , isSubscribing(false)
     , interfaceCreated(false)
+    , upgradeItems({"lliurex","security","ubuntu","kernel"})
+
        
 {
 
@@ -53,19 +50,41 @@ void LliurexAutoUpgradeWidgetUtils::startWidget(){
 
     isInitializing=true;
 
-    QFuture<bool>future=QtConcurrent::run(QThreadPool::globalInstance(),[this]() {
+    QString logPath=this->pkgInstalledLog;
+    QString tokenPath=this->disableAutoUpgrade;
 
-        return this->showWidget();
+    QFuture<QPair<bool,QSet<QString>>>future=QtConcurrent::run(QThreadPool::globalInstance(),[logPath,tokenPath]() {
+        QPair<bool,QSet<QString>>result;
+
+        result.first=!QFile::exists(tokenPath);
+
+        if (!result.first){
+            return result;
+        }
+
+        QFile file(logPath);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
+            QTextStream in(&file);
+            QString content=in.readAll();
+
+            QStringList tmpPkg=content.split(QRegularExpression("\\s+"),Qt::SkipEmptyParts);
+
+            result.second=QSet<QString>(tmpPkg.begin(),tmpPkg.end());
+        }
+
+        return result;
     });
 
-    auto watcher = new QFutureWatcher<bool>(this);
-    connect(watcher, &QFutureWatcher<bool>::finished, this, [this, watcher]() {
-        bool showWidgetResult = watcher->result();
+    auto watcher = new QFutureWatcher<QPair<bool,QSet<QString>>>(this);
+    connect(watcher, &QFutureWatcher<QPair<bool,QSet<QString>>>::finished, this, [this, watcher]() {
+        
+        auto result=watcher->result();
+        bool showWidgetResult = result.first;
         bool startOk = false;
 
         if (showWidgetResult) {
+            this->lastInstalledPkg=result.second;
             try {
-                this->getPkgsInstalledInSession();
                 startOk = this->createInterface();
             } catch (const std::exception& e) {
                 qDebug() << "[LLIUREX-AUTO-UPGRADE]: Error initializing widget: " << e.what();
@@ -83,18 +102,6 @@ void LliurexAutoUpgradeWidgetUtils::startWidget(){
     watcher->setFuture(future);
 }
 
-bool LliurexAutoUpgradeWidgetUtils::showWidget(){
-
-    QFile disableToken;
-    disableToken.setFileName(disableAutoUpgrade);
-
-    if (disableToken.exists()){
-        return false;
-    }else{
-        return true;
-    }
-}  
-
 bool LliurexAutoUpgradeWidgetUtils::createInterface(){
 
     if (managerInterface && managerInterface->isValid()) {
@@ -108,6 +115,7 @@ bool LliurexAutoUpgradeWidgetUtils::createInterface(){
 
     if (managerInterface){
         managerInterface->deleteLater();
+        managerInterface=nullptr;
     }
     
     managerInterface=new QDBusInterface("org.freedesktop.systemd1",
@@ -325,14 +333,10 @@ void LliurexAutoUpgradeWidgetUtils::onPropertiesChanged(const QString &interface
 void LliurexAutoUpgradeWidgetUtils::getLastInstalledPkg(QString installedPkg)
 {
 
-    QStringList tmpPkg=installedPkg.split(" ");
+    QStringList tmpPkg=installedPkg.split(" ",Qt::SkipEmptyParts);
 
     for (const QString &pkg : tmpPkg){
-        if (!pkg.isEmpty()){
-            if (!lastInstalledPkg.contains(pkg)){
-                lastInstalledPkg.prepend(pkg);
-            }
-        }
+        lastInstalledPkg.insert(pkg);
 
     }
 
@@ -383,32 +387,6 @@ QString LliurexAutoUpgradeWidgetUtils::getWaitTimeForUpgrade(QString &message){
     return QString();
 }
 
-void LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession(){
-
-    QFile pkgsLog(pkgInstalledLog);
-
-    if (pkgsLog.exists()){
-        if (pkgsLog.open(QIODevice::ReadOnly)){
-            QTextStream content(&pkgsLog);
-            while (!content.atEnd()){
-                QString tmpLine=content.readLine().remove('\n');
-                if (!tmpLine.isEmpty()){
-                    QStringList tmpPkg=tmpLine.split(" ");
-                    for (const QString &pkg : tmpPkg){
-                        if (!pkg.isEmpty()){
-                            if (!lastInstalledPkg.contains(pkg)){
-                                lastInstalledPkg.prepend(pkg);
-                            }
-                        }
-                    }
-                }
-            }
-            
-            pkgsLog.close();
-        }
-    }
-}
-
 QString LliurexAutoUpgradeWidgetUtils::getLliurexVersion(){
 
     QProcess process;
@@ -422,6 +400,15 @@ QString LliurexAutoUpgradeWidgetUtils::getLliurexVersion(){
     }
 
     return QString();
+}
+
+QStringList LliurexAutoUpgradeWidgetUtils::getPkgsInstalledInSession() const{
+
+   QStringList list=lastInstalledPkg.values();
+   list.sort();
+
+   return list; 
+
 }
 
 

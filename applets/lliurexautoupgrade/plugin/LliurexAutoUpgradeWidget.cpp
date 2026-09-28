@@ -288,7 +288,7 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
     }
 
     if (actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::PackagesInstalled || actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::NoChanges) {
-        QStringList installedPkg = m_utils->lastInstalledPkg;
+        QStringList installedPkg = m_utils->getPkgsInstalledInSession();
         setLastInstalledPkg(installedPkg);
         setShowDetailsBtn(!installedPkg.isEmpty());
     }

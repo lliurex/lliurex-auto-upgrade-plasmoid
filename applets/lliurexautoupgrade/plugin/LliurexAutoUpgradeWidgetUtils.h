@@ -5,8 +5,8 @@
 #include <QFile>
 #include <QDir>
 #include <QDBusInterface>
-
-using namespace std;
+#include <QStringList>
+#include <QVariantMap>
 
 
 class LliurexAutoUpgradeWidgetUtils : public QObject
@@ -43,16 +43,20 @@ public:
         SystemUpdated = 16,
         UpdateLimit = 17,
         UpdatedError = 18
-    };    
-   
+    };
 
+   Q_ENUM(UpgradeAction);   
+   
    QString m_unitName="lliurex-auto-upgrade.service";
-   QStringList lastInstalledPkg;
+  
    
    bool startListener();
-  
+
+   QStringList getPkgsInstalledInSession() const;
+
    void startWidget();
    void createSubscription();
+
 
 signals:
 
@@ -62,7 +66,7 @@ signals:
 
 private:
 
-    explicit LliurexAutoUpgradeWidgetUtils(QObject *parent = nullptr);
+    explicit LliurexAutoUpgradeWidgetUtils();
 
     UpgradeAction actionCode=UpgradeAction::ReadyToCheck;
     QDBusInterface *managerInterface;
@@ -78,14 +82,15 @@ private:
     QString lastUpdate;
     QString disableAutoUpgrade="/etc/lliurex-auto-upgrade/disabled";
     QString pkgInstalledLog="/run/lliurex-auto-upgrade/installed_packages.log";
-    QStringList upgradeItems={"lliurex","security","ubuntu","kernel"};
+    QStringList upgradeItems;
 
     QString lastExecution="";
     QString upgradeItem="";
     QString waitTime="";
     QString lliurexVersion="";
 
-    bool showWidget();
+    QSet<QString>lastInstalledPkg;
+
     bool createInterface();
 
     QString getLastExecutionTime();
@@ -93,7 +98,6 @@ private:
     QString getWaitTimeForUpgrade(QString &message);
     QString getLliurexVersion();
 
-    void getPkgsInstalledInSession();
     void getLastInstalledPkg(QString instaledPkg);
     
 private slots:
