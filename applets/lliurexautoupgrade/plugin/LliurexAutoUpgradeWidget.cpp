@@ -15,7 +15,7 @@
 
 LliurexAutoUpgradeWidget::LliurexAutoUpgradeWidget(QObject *parent)
     : QObject(parent)
-    , m_utils(new LliurexAutoUpgradeWidgetUtils(this))
+    , m_utils(&LliurexAutoUpgradeWidgetUtils::instance())
 
    
 {
@@ -288,7 +288,7 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
     }
 
     if (actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::PackagesInstalled || actionCode == LliurexAutoUpgradeWidgetUtils::UpgradeAction::NoChanges) {
-        QStringList installedPkg = m_utils->lastInstalledPkg;
+        QStringList installedPkg = m_utils->getPkgsInstalledInSession();
         setLastInstalledPkg(installedPkg);
         setShowDetailsBtn(!installedPkg.isEmpty());
     }
@@ -305,7 +305,7 @@ void LliurexAutoUpgradeWidget::disableApplet(){
     setIconNamePh("lliurex-auto-upgrade-error");
     setSubToolTip(notificationBody);
     setMessagePh(notificationBody);
-    changeTryIconState(0);
+    changeTryIconState(1);
 
 }
 
