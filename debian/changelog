@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.16) jammy; urgency=medium
+
+  * Fixed performance when widget is running in two or more panels
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 28 Sep 2026 12:49:46 +0200
+
 lliurex-auto-upgrade-plasmoid (0.1.15) jammy; urgency=medium
 
   * Changed to support new operation of lliurex-auto-upgrade 
