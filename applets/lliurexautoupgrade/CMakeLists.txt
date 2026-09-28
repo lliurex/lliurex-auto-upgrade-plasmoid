@@ -20,6 +20,7 @@ add_library(lliurexautoupgradeplugin SHARED ${lliurexautoupgradewidget_SRCS})
 target_link_libraries(lliurexautoupgradeplugin
                       Qt5::Quick
                       Qt5::Core
+		      Qt5::Concurrent
                       Qt5::Widgets
                       KF5::CoreAddons
                       KF5::I18n

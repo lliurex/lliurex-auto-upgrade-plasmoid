@@ -126,7 +126,7 @@ private:
 private slots:
     
     void handleStartFinished(bool showWidget,bool startOk);
-    void manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,QString& lastExecutionTime,QString& waitTime,QString& upgradeItem,QString& lliurexVersion);
+    void manageState(LliurexAutoUpgradeWidgetUtils::UpgradeAction actionCode,const QString& lastExecutionTime,const QString& waitTime,const QString& upgradeItem,const QString& lliurexVersion);
     void enableWidget(bool success,QString error);
     void onNotificationClosed (uint id, uint reason);
     void onNotificationSent (const QDBusMessage &reply);
