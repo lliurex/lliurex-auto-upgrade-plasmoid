@@ -179,11 +179,12 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::DownloadLimit:
+            icon = "lliurex-auto-upgrade-ok";
+            useHeadText=true;
+            useUpdateFootText=true;
+
             if (!lastUpgradeItem.isEmpty()){
                 notificationBody=lastUpgradeDownloaded % " " %lastUpgradeItem % "\n" % i18n("The download of updates has reached its limit.");
-                icon = "lliurex-auto-upgrade-ok";
-                useHeadText=true;
-                useUpdateFootText=true;
             }else{
                 notificationBody=i18n("The download of updates has reached its limit.");
             }
