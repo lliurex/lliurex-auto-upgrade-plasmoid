@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.17) jammy; urgency=medium
+
+  * Fixed message when downloaded component is unknown
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 07 Oct 2026 15:39:15 +0200
+
 lliurex-auto-upgrade-plasmoid (0.1.16) jammy; urgency=medium
 
   * Fixed performance when widget is running in two or more panels
