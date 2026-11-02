@@ -224,13 +224,14 @@ void LliurexAutoUpgradeWidget::manageState(LliurexAutoUpgradeWidgetUtils::Upgrad
             break;
 
         case LliurexAutoUpgradeWidgetUtils::UpgradeAction::UpdateLimit:
+            icon = "lliurex-auto-upgrade-ok";
+            useHeadText=true;
+            useUpdateFootText=true;
+          
             closeNotificationForced();
             if (!lastUpgradeItem.isEmpty()){
                 notificationBody=lastUpgradeInstalled % " " % lastUpgradeItem % "\n" % i18n("The update process has reached its limit.");
-                icon = "lliurex-auto-upgrade-ok";
-                useHeadText=true;
-                useUpdateFootText=true;
-            }else{
+              }else{
                 notificationBody=i18n("The update process has reached its limit.");
             }
             break;
