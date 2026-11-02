@@ -1,3 +1,9 @@
+lliurex-auto-upgrade-plasmoid (0.1.18) jammy; urgency=medium
+
+  * Fixed message when upgrade process has reached its limit and last installed component is unknown
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 02 Nov 2026 09:45:17 +0100
+
 lliurex-auto-upgrade-plasmoid (0.1.17) jammy; urgency=medium
 
   * Fixed message when downloaded component is unknown
